@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: LiHuai19961031
+    url: jdbc:mysql://47.100.44.201:3306/lab
+server:
+  port: 10010
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+logging:
+  level:
+    com.lpc.labbackend: debug
