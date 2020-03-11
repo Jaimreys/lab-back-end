@@ -5,21 +5,21 @@
         <id column="id" property="id" jdbcType="INTEGER"/>
         <result column="description" property="description" jdbcType="VARCHAR"/>
         <result column="path" property="path" jdbcType="VARCHAR"/>
-        <collection property="childMenus" ofType="com.lpc.labbackend.entity.Menu" column="id" select="getChildMenus">
+        <collection property="childMenus" ofType="com.lpc.labbackend.entity.Menu" column="id" select="selectChildMenus">
         </collection>
     </resultMap>
     <sql id="Base_Column_List">
         id, description, path
     </sql>
 
-    <select id="getMenus" resultMap="BaseResultMap">
+    <select id="selectMenus" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from menu
         where parent_menu_id is null
     </select>
 
-    <select id="getChildMenus" resultMap="BaseResultMap">
+    <select id="selectChildMenus" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from menu

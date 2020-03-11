@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lpc.labbackend.dao.ExceptionRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.lpc.labbackend.entity.ExceptionRecord" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="INTEGER" />
+    <result column="msg" property="msg" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, code, msg, time
+  </sql>
+
+  <insert id="insertException" parameterType="com.lpc.labbackend.entity.ExceptionRecord" >
+    insert into exception_record (code, msg, time)
+    values (#{code,jdbcType=INTEGER}, #{msg,jdbcType=VARCHAR},
+      #{time,jdbcType=TIMESTAMP})
+  </insert>
+</mapper>

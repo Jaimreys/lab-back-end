@@ -18,7 +18,7 @@ class LabBackEndApplicationTests {
 
     @Test
     void contextLoads() {
-        List<Menu> menus = menuMapper.getMenus();
+        List<Menu> menus = menuMapper.selectMenus();
         ResponseData<List<Menu>> data = new ResponseData<>(menus, HttpStatusEnum.SUCCESSFUL);
         String jsonString = JsonUtil.responseData2JsonString(data);
         System.out.println(jsonString);

@@ -3,18 +3,21 @@ package com.lpc.labbackend.enumeration;
 import org.springframework.http.HttpStatus;
 
 public enum HttpStatusEnum {
-    SUCCESSFUL("成功", 2000),
+    SUCCESSFUL(2000, "成功"),
 
-    LOGIN_UNSUCCESSFUL("登录失败，请检查账号密码", 4001),
-    UN_LOGIN("尚未登录，请登录", 4002),
-    TOKEN_EXPIRED("登录已过期，请重新登录", 4003);
+    LOGIN_UNSUCCESSFUL(4001, "登录失败，请检查账号密码"),
+    UN_LOGIN(4002, "尚未登录，请登录"),
+    TOKEN_EXPIRED(4003, "登录已过期，请重新登录"),
+
+    INTERNAL_SERVER_ERROR(5000, "服务器内部错误")
+    ;
 
     private String msg;
     private int code;
 
-    HttpStatusEnum(String msg, int code) {
-        this.msg = msg;
+    HttpStatusEnum(int code, String msg) {
         this.code = code;
+        this.msg = msg;
     }
 
     public String getMsg() {

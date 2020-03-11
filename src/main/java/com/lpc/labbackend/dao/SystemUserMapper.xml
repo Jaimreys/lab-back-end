@@ -12,7 +12,7 @@
         username, real_name, password, role, status
     </sql>
 
-    <select id="getSystemUserByUsername" resultMap="BaseResultMap" parameterType="java.lang.String">
+    <select id="selectSystemUserByUsername" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List"/>
         from system_user

@@ -3,8 +3,8 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: LiHuai19961031
-    url: jdbc:mysql://47.100.44.201:3306/lab
+    password: 123456
+    url: jdbc:mysql://localhost:3306/lab?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false
 server:
   port: 10010
 mybatis:

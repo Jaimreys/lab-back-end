@@ -5,5 +5,5 @@ import com.lpc.labbackend.entity.Menu;
 import java.util.List;
 
 public interface MenuMapper {
-    public List<Menu> getMenus();
+    public List<Menu> selectMenus();
 }
