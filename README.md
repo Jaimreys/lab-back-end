@@ -15,3 +15,23 @@
 比如CORS问题，比如前后端的数据交互问题。
 
 遇到的所有问题我都会整理成文档放到项目的documents文件夹下。
+
+# application.yml
+为了避免数据库密码泄露，暂时先不提交yml文件了，配置都先写在这里
+```yaml
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/lab?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false
+server:
+  port: 10010
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+logging:
+  level:
+    com.lpc.labbackend: debug
+```
