@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lpc.labbackend.dao.MenuMapper">
+    <resultMap id="BaseResultMap" type="com.lpc.labbackend.entity.Menu">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="path" property="path" jdbcType="VARCHAR"/>
+        <collection property="childMenus" ofType="com.lpc.labbackend.entity.Menu" column="id" select="getChildMenus">
+        </collection>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, description, path
+    </sql>
+
+    <select id="getMenus" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from menu
+        where parent_menu_id is null
+    </select>
+
+    <select id="getChildMenus" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from menu
+        where menu.parent_menu_id = #{id}
+    </select>
+</mapper>

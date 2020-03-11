@@ -3,18 +3,15 @@ package com.lpc.labbackend.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lpc.labbackend.entity.SystemUser;
 import com.lpc.labbackend.enumeration.HttpStatusEnum;
-import com.lpc.labbackend.util.ResponseMsgUtil;
+import com.lpc.labbackend.util.ResponseDataUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -49,7 +46,9 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                     = new UsernamePasswordAuthenticationToken(systemUser.getUsername(), systemUser.getPassword());
             return authenticationManager.authenticate(token);
         } catch (IOException e) {
-            ResponseMsgUtil.setResponseMsg(response, HttpStatusEnum.LOGIN_UNSUCCESSFUL);
+            ResponseDataUtil.setDataInResponse400(response,
+                    null,
+                    HttpStatusEnum.LOGIN_UNSUCCESSFUL);
             e.printStackTrace();
             return null;
         }
@@ -79,8 +78,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         //将token写到响应里
         response.addHeader("Authorization", "Bearer " + jwt);
-        response.setStatus(HttpStatus.OK.value());
-        ResponseMsgUtil.setResponseMsg(response, HttpStatusEnum.LOGIN_SUCCESSFUL);
+        ResponseDataUtil.setDataInResponse(response, null, HttpStatusEnum.SUCCESSFUL);
 
         chain.doFilter(request, response);
     }
@@ -90,6 +88,8 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                                            HttpServletResponse resp,
                                            AuthenticationException failed)
             throws IOException, ServletException {
-        ResponseMsgUtil.setResponseMsg(resp, HttpStatusEnum.LOGIN_UNSUCCESSFUL);
+        ResponseDataUtil.setDataInResponse400(resp,
+                null,
+                HttpStatusEnum.LOGIN_UNSUCCESSFUL);
     }
 }

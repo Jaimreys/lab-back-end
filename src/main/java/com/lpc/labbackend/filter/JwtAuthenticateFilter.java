@@ -1,9 +1,10 @@
 package com.lpc.labbackend.filter;
 
 import com.lpc.labbackend.enumeration.HttpStatusEnum;
-import com.lpc.labbackend.util.ResponseMsgUtil;
+import com.lpc.labbackend.util.ResponseDataUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,7 +18,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +39,9 @@ public class JwtAuthenticateFilter extends BasicAuthenticationFilter {
         String jwt = request.getHeader("Authorization");
         if (jwt == null || !jwt.startsWith("Bearer ")) {
             chain.doFilter(request, response);
-            ResponseMsgUtil.setResponseMsg(response, HttpStatusEnum.UN_LOGIN);
+            ResponseDataUtil.setDataInResponse400(response,
+                    null,
+                    HttpStatusEnum.UN_LOGIN);
         } else {
             //存在jwt时
             //去掉token前加的前缀
@@ -61,7 +63,9 @@ public class JwtAuthenticateFilter extends BasicAuthenticationFilter {
                 chain.doFilter(request, response);
             } else {
                 //如果token过期
-                ResponseMsgUtil.setResponseMsg(response, HttpStatusEnum.TOKEN_EXPIRED);
+                ResponseDataUtil.setDataInResponse400(response,
+                        null,
+                        HttpStatusEnum.TOKEN_EXPIRED);
                 chain.doFilter(request, response);
             }
         }
