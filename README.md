@@ -20,6 +20,9 @@ service层自动装配mapper报错bean不存在，这个报错是因为通过@Ma
 
 # application.yml
 为了避免数据库密码泄露，暂时先不提交yml文件了，配置都先写在这里
+
+启动项目时在src\main\resources目录下创建一个application.yml文件，然后将下面的内容复制进去。数据库的连接信息修改成自己的
+
 ```yaml
 spring:
   datasource:
