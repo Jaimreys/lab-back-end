@@ -15,6 +15,9 @@ import java.util.Date;
 
 /**
  * 全局的异常处理器
+ * Throwable类的getStackTrace()获取所有异常信息数组，其中第一个就是报异常的位置
+ * com.lpc.labbackend.controller.MenuController.getMenus(MenuController.java:24)
+ * Throwable类的toString()返回类名
  */
 @RestControllerAdvice
 public class CustomizedExceptionHandler {
@@ -29,16 +32,34 @@ public class CustomizedExceptionHandler {
      */
     @ExceptionHandler(value = CustomizedException.class)
     public ResponseData customiezdExceptionHandle(CustomizedException ex) {
-        //打印错误信息
-        logger.error(ex.getMsg());
-        //把异常存入数据库方便查看
-        exceptionRecordMapper.insertException(
-                new ExceptionRecord(ex.getCode(), ex.getMsg(), new Date(System.currentTimeMillis())));
+        String location = ex.getStackTrace()[0].toString();
+        String locationRowNumber = location.substring(location.lastIndexOf(":") + 1, location.length() - 1);
+        //获取倒数第二个点号的位置。搜索的位置从倒数第一个点号的前一位往前找
+        int penultimateIndex = location.lastIndexOf(".", location.lastIndexOf(".") - 1);
+        String locationMethod = location.substring(penultimateIndex + 1, location.lastIndexOf("(")) + "()";
+        String locationClass = location.substring(0, penultimateIndex);
 
-        ResponseData responseData = new ResponseData(ex.getCode(),
+        //打印错误信息
+        logger.error("错误信息：" + ex.getMsg());
+        //打印错误位置
+        logger.error("错误位置：" + location);
+
+        //把异常存入数据库方便查看
+        ExceptionRecord exceptionRecord = new ExceptionRecord();
+        exceptionRecord.setCode(ex.getCode());
+        exceptionRecord.setMsg(ex.getMsg());
+        exceptionRecord.setTime(new Date(System.currentTimeMillis()));
+        exceptionRecord.setClazz(ex.toString());
+        exceptionRecord.setLocationClass(locationClass);
+        exceptionRecord.setLocationMethod(locationMethod);
+        exceptionRecord.setLocationRowNumber(locationRowNumber);
+
+        //插入到数据库
+        exceptionRecordMapper.insertException(exceptionRecord);
+
+        return new ResponseData(ex.getCode(),
                 ex.getMsg(),
                 null);
-        return responseData;
     }
 
     /**
@@ -46,16 +67,34 @@ public class CustomizedExceptionHandler {
      */
     @ExceptionHandler(value = Exception.class)
     public ResponseData customiezdExceptionHandle(Exception ex) {
+        String location = ex.getStackTrace()[0].toString();
+        String msg = ex.getMessage() == null ? ex.toString() : ex.getMessage();
+        String locationRowNumber = location.substring(location.lastIndexOf(":") + 1, location.length() - 1);
+        //获取倒数第二个点号的位置。搜索的位置从倒数第一个点号的前一位往前找
+        int penultimateIndex = location.lastIndexOf(".", location.lastIndexOf(".") - 1);
+        String locationMethod = location.substring(penultimateIndex + 1, location.lastIndexOf("(")) + "()";
+        String locationClass = location.substring(0, penultimateIndex);
+
         //打印错误信息
-        logger.error(ex.getMessage());
+        logger.error("错误信息：" + msg);
+        //打印错误位置
+        logger.error("错误位置：" + location);
+
         //把异常存入数据库方便查看
-        exceptionRecordMapper.insertException(
-                new ExceptionRecord(HttpStatusEnum.INTERNAL_SERVER_ERROR.getCode(),
-                        ex.getMessage(),
-                        new Date(System.currentTimeMillis())));
-        ResponseData responseData = new ResponseData(HttpStatusEnum.INTERNAL_SERVER_ERROR.getCode(),
-                ex.getMessage(),
+        ExceptionRecord exceptionRecord = new ExceptionRecord();
+        exceptionRecord.setCode(HttpStatusEnum.INTERNAL_SERVER_ERROR.getCode());
+        exceptionRecord.setMsg(msg);
+        exceptionRecord.setTime(new Date(System.currentTimeMillis()));
+        exceptionRecord.setClazz(ex.toString());
+        exceptionRecord.setLocationClass(locationClass);
+        exceptionRecord.setLocationMethod(locationMethod);
+        exceptionRecord.setLocationRowNumber(locationRowNumber);
+
+        //插入到数据库
+        exceptionRecordMapper.insertException(exceptionRecord);
+
+        return new ResponseData(HttpStatusEnum.INTERNAL_SERVER_ERROR.getCode(),
+                HttpStatusEnum.INTERNAL_SERVER_ERROR.getMsg(),
                 null);
-        return responseData;
     }
 }

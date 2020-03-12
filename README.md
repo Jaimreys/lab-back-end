@@ -3,6 +3,8 @@
 
 [项目的前端部分](https://github.com/FatShallot/lab-front-end)
 
+[相关文档](http://47.100.44.201:8000/category/front-and-back-end-separation/)
+
 后台使用了
 - SpringBoot
 - SpringSecurity
@@ -14,7 +16,7 @@
 做成前后端分离只是为了自己练习用，前后端分离会出现很多使用JSP、Thymeleaf时没有碰到的问题。
 比如CORS问题，比如前后端的数据交互问题。
 
-遇到的所有问题我都会整理成文档放到项目的documents文件夹下。
+service层自动装配mapper报错bean不存在，这个报错是因为通过@MapperScan扫描mapper造成的，可以忽略它，这个报错对程序不会造成任何影响
 
 # application.yml
 为了避免数据库密码泄露，暂时先不提交yml文件了，配置都先写在这里

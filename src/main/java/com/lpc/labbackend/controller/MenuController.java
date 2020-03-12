@@ -21,7 +21,6 @@ public class MenuController {
 
     @GetMapping("/menus")
     public List<Menu> getMenus() {
-        throw new CustomizedException(5000, "异常测试");
-//        return menuService.selectMenus();
+        return menuService.selectMenus();
     }
 }

@@ -5,15 +5,22 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="code" property="code" jdbcType="INTEGER" />
     <result column="msg" property="msg" jdbcType="VARCHAR" />
+    <result column="clazz" property="clazz" jdbcType="VARCHAR" />
+    <result column="location_class" property="locationClass" jdbcType="VARCHAR" />
+    <result column="location_method" property="locationMethod" jdbcType="VARCHAR" />
+    <result column="location_row_number" property="locationRowNumber" jdbcType="VARCHAR" />
     <result column="time" property="time" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, code, msg, time
+    id, code, msg, clazz, location_class, location_method, location_row_number, time
   </sql>
 
   <insert id="insertException" parameterType="com.lpc.labbackend.entity.ExceptionRecord" >
-    insert into exception_record (code, msg, time)
+    insert into exception_record (code, msg,
+      clazz, location_class, location_method,
+      location_row_number, time)
     values (#{code,jdbcType=INTEGER}, #{msg,jdbcType=VARCHAR},
-      #{time,jdbcType=TIMESTAMP})
+      #{clazz,jdbcType=VARCHAR}, #{locationClass,jdbcType=VARCHAR}, #{locationMethod,jdbcType=VARCHAR},
+      #{locationRowNumber,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP})
   </insert>
 </mapper>

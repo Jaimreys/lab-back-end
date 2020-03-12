@@ -18,7 +18,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<Menu> getMenus() {
+    public List<Menu> selectMenus() {
         return menuMapper.selectMenus();
     }
 }

@@ -6,15 +6,13 @@ public class ExceptionRecord {
     private Integer id;
     private Integer code;
     private String msg;
+    private String clazz;
+    private String locationClass;
+    private String locationMethod;
+    private String locationRowNumber;
     private Date time;
 
     public ExceptionRecord() {
-    }
-
-    public ExceptionRecord(Integer code, String msg, Date time) {
-        this.code = code;
-        this.msg = msg;
-        this.time = time;
     }
 
     public Integer getId() {
@@ -47,5 +45,37 @@ public class ExceptionRecord {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public String getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(String clazz) {
+        this.clazz = clazz;
+    }
+
+    public String getLocationClass() {
+        return locationClass;
+    }
+
+    public void setLocationClass(String locationClass) {
+        this.locationClass = locationClass;
+    }
+
+    public String getLocationMethod() {
+        return locationMethod;
+    }
+
+    public void setLocationMethod(String locationMethod) {
+        this.locationMethod = locationMethod;
+    }
+
+    public String getLocationRowNumber() {
+        return locationRowNumber;
+    }
+
+    public void setLocationRowNumber(String locationRowNumber) {
+        this.locationRowNumber = locationRowNumber;
     }
 }
