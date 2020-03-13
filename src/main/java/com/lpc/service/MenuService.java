@@ -5,5 +5,5 @@ import com.lpc.entity.Menu;
 import java.util.List;
 
 public interface MenuService {
-    public List<Menu> getMenus();
+    public List<Menu> getMenus(int role);
 }

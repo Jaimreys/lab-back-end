@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 /**
  * 将返回的数据统一封装到自定义的ResponseData类中
  */
-@RestControllerAdvice("com.lpc.labbackend.controller")
+@RestControllerAdvice("com.lpc.controller")
 public class CommonResponseHandler implements ResponseBodyAdvice {
     @Override
     public boolean supports(MethodParameter methodParameter, Class aClass) {
@@ -20,14 +20,14 @@ public class CommonResponseHandler implements ResponseBodyAdvice {
     }
 
     @Override
-    public Object beforeBodyWrite(Object o,
-                                  MethodParameter methodParameter,
-                                  MediaType mediaType,
-                                  Class aClass,
-                                  ServerHttpRequest serverHttpRequest,
-                                  ServerHttpResponse serverHttpResponse) {
+    public ResponseData beforeBodyWrite(Object o,
+                                        MethodParameter methodParameter,
+                                        MediaType mediaType,
+                                        Class aClass,
+                                        ServerHttpRequest serverHttpRequest,
+                                        ServerHttpResponse serverHttpResponse) {
         if (o instanceof ResponseData) {
-            return o;
+            return (ResponseData) o;
         } else {
             return new ResponseData<Object>(o, HttpStatusEnum.SUCCESSFUL);
         }

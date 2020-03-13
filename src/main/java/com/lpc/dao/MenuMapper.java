@@ -5,5 +5,5 @@ import com.lpc.entity.Menu;
 import java.util.List;
 
 public interface MenuMapper {
-    public List<Menu> selectMenus();
+    public List<Menu> selectMenus(List<Integer> menuIds);
 }

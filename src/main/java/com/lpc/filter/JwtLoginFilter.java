@@ -20,6 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.Iterator;
 
 /**
  * 登录验证
@@ -41,9 +43,16 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                                                 HttpServletResponse response)
             throws AuthenticationException {
         try {
+            //下面的代码适用于url参数
+//            SystemUser systemUser = new SystemUser();
+//            systemUser.setUsername(request.getParameter("username").trim());
+//            systemUser.setPassword(request.getParameter("password"));
+
+            //下面的代码适用于请求体
             SystemUser systemUser = new ObjectMapper().readValue(request.getInputStream(), SystemUser.class);
             //用户名去掉空格
             systemUser.setUsername(systemUser.getUsername().trim());
+
             UsernamePasswordAuthenticationToken token
                     = new UsernamePasswordAuthenticationToken(systemUser.getUsername(), systemUser.getPassword());
             return authenticationManager.authenticate(token);
@@ -63,10 +72,11 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                                             Authentication authResult)
             throws IOException, ServletException {
         Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
-        StringBuffer role = new StringBuffer();
-        for (GrantedAuthority authority : authorities) {
-            role.append(authority.getAuthority())
-                    .append(",");
+        //数据库设计了一个用户只会有一个角色
+        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+        String role = "0";
+        if (iterator.hasNext()) {
+            role = iterator.next().getAuthority();
         }
 
         String jwt = Jwts.builder()

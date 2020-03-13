@@ -5,7 +5,10 @@
         <id column="id" property="id" jdbcType="INTEGER"/>
         <result column="description" property="description" jdbcType="VARCHAR"/>
         <result column="path" property="path" jdbcType="VARCHAR"/>
-        <collection property="childMenus" ofType="com.lpc.entity.Menu" column="id" select="selectChildMenus">
+        <collection property="childMenus" ofType="com.lpc.entity.Menu">
+            <id column="child_id" property="id" jdbcType="INTEGER"/>
+            <result column="child_description" property="description" jdbcType="VARCHAR"/>
+            <result column="child_path" property="path" jdbcType="VARCHAR"/>
         </collection>
     </resultMap>
     <sql id="Base_Column_List">
@@ -14,15 +17,24 @@
 
     <select id="selectMenus" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List"/>
-        from menu
-        where parent_menu_id is null
+          p.id,
+          p.description,
+          p.path,
+          c.id as child_id,
+          c.description as child_description,
+          c.path as child_path
+        from menu p
+        left outer join menu c
+        on c.parent_menu_id = p.id
+        and c.id in
+        <foreach collection="list" item="menuId" index="index" open="(" separator="," close=")">
+            #{menuId}
+        </foreach>
+        where p.parent_menu_id is null
+        and p.id in
+        <foreach collection="list" item="menuId" index="index" open="(" separator="," close=")">
+            #{menuId}
+        </foreach>
     </select>
 
-    <select id="selectChildMenus" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from menu
-        where menu.parent_menu_id = #{id}
-    </select>
 </mapper>

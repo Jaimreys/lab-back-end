@@ -69,6 +69,8 @@ public class CustomizedExceptionHandler {
     public ResponseData customiezdExceptionHandle(Exception ex) {
         String location = ex.getStackTrace()[0].toString();
         String msg = ex.getMessage() == null ? ex.toString() : ex.getMessage();
+        String exStr = ex.toString();
+        String clazz = exStr.contains(":") ? exStr.substring(0, exStr.indexOf(":")) : exStr;
         String locationRowNumber = location.substring(location.lastIndexOf(":") + 1, location.length() - 1);
         //获取倒数第二个点号的位置。搜索的位置从倒数第一个点号的前一位往前找
         int penultimateIndex = location.lastIndexOf(".", location.lastIndexOf(".") - 1);
@@ -85,7 +87,7 @@ public class CustomizedExceptionHandler {
         exceptionRecord.setCode(HttpStatusEnum.INTERNAL_SERVER_ERROR.getCode());
         exceptionRecord.setMsg(msg);
         exceptionRecord.setTime(new Date(System.currentTimeMillis()));
-        exceptionRecord.setClazz(ex.toString());
+        exceptionRecord.setClazz(clazz);
         exceptionRecord.setLocationClass(locationClass);
         exceptionRecord.setLocationMethod(locationMethod);
         exceptionRecord.setLocationRowNumber(locationRowNumber);
