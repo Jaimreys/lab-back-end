@@ -37,10 +37,10 @@ public class JwtAuthenticateFilter extends BasicAuthenticationFilter {
             throws IOException, ServletException {
         String jwt = request.getHeader("Authorization");
         if (jwt == null || !jwt.startsWith("Bearer ")) {
-            chain.doFilter(request, response);
             ResponseDataUtil.setDataInResponse400(response,
                     null,
                     HttpStatusEnum.UN_LOGIN);
+            chain.doFilter(request, response);
         } else {
             //存在jwt时
             //去掉token前加的前缀

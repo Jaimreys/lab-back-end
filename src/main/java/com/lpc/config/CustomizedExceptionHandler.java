@@ -8,9 +8,12 @@ import com.lpc.enumeration.HttpStatusEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 /**
@@ -31,7 +34,7 @@ public class CustomizedExceptionHandler {
      * 捕获自定义的异常
      */
     @ExceptionHandler(value = CustomizedException.class)
-    public ResponseData customiezdExceptionHandle(CustomizedException ex) {
+    public ResponseData customizedExceptionHandle(HttpServletResponse response, CustomizedException ex) {
         String location = ex.getStackTrace()[0].toString();
         String locationRowNumber = location.substring(location.lastIndexOf(":") + 1, location.length() - 1);
         //获取倒数第二个点号的位置。搜索的位置从倒数第一个点号的前一位往前找
@@ -39,6 +42,7 @@ public class CustomizedExceptionHandler {
         String locationMethod = location.substring(penultimateIndex + 1, location.lastIndexOf("(")) + "()";
         String locationClass = location.substring(0, penultimateIndex);
 
+        ex.printStackTrace();
         //打印错误信息
         logger.error("错误信息：" + ex.getMsg());
         //打印错误位置
@@ -57,6 +61,15 @@ public class CustomizedExceptionHandler {
         //插入到数据库
         exceptionRecordMapper.insertException(exceptionRecord);
 
+        //给响应设置状态码
+        if (ex.getCode() >= 4000 && ex.getCode() < 5000) {
+            //400
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+        } else {
+            //500
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
         return new ResponseData(ex.getCode(),
                 ex.getMsg(),
                 null);
@@ -66,7 +79,7 @@ public class CustomizedExceptionHandler {
      * 捕获Java的异常类
      */
     @ExceptionHandler(value = Exception.class)
-    public ResponseData customiezdExceptionHandle(Exception ex) {
+    public ResponseData customizedExceptionHandle(HttpServletResponse response, Exception ex) {
         String location = ex.getStackTrace()[0].toString();
         String msg = ex.getMessage() == null ? ex.toString() : ex.getMessage();
         String exStr = ex.toString();
@@ -77,6 +90,7 @@ public class CustomizedExceptionHandler {
         String locationMethod = location.substring(penultimateIndex + 1, location.lastIndexOf("(")) + "()";
         String locationClass = location.substring(0, penultimateIndex);
 
+        ex.printStackTrace();
         //打印错误信息
         logger.error("错误信息：" + msg);
         //打印错误位置
@@ -95,8 +109,19 @@ public class CustomizedExceptionHandler {
         //插入到数据库
         exceptionRecordMapper.insertException(exceptionRecord);
 
+        //给响应设置状态码
+        //500
+        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+
         return new ResponseData(HttpStatusEnum.INTERNAL_SERVER_ERROR.getCode(),
                 HttpStatusEnum.INTERNAL_SERVER_ERROR.getMsg(),
                 null);
     }
+
+    @ExceptionHandler(value = Error.class)
+    public void customizedExceptionHandle(Error error) {
+        error.printStackTrace();
+        logger.error("捕获到系统Error");
+    }
 }
+

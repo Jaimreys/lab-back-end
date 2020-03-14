@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Iterator;
 
 /**
@@ -93,15 +92,5 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         ResponseDataUtil.setDataInResponse(response, null, HttpStatusEnum.SUCCESSFUL);
 
         chain.doFilter(request, response);
-    }
-
-    @Override
-    public void unsuccessfulAuthentication(HttpServletRequest req,
-                                           HttpServletResponse resp,
-                                           AuthenticationException failed)
-            throws IOException, ServletException {
-        ResponseDataUtil.setDataInResponse400(resp,
-                null,
-                HttpStatusEnum.LOGIN_UNSUCCESSFUL);
     }
 }
