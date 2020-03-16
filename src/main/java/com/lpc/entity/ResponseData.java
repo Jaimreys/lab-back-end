@@ -8,20 +8,20 @@ import com.lpc.enumeration.HttpStatusEnum;
 public class ResponseData<T> {
     private int code;
     private String msg;
-    private boolean isSuccessful;
+    private boolean successful;
     private T data;
 
-    public ResponseData(T data, HttpStatusEnum httpStatusEnum, boolean isSuccessful) {
+    public ResponseData(T data, HttpStatusEnum httpStatusEnum, boolean successful) {
         this.code = httpStatusEnum.getCode();
         this.msg = httpStatusEnum.getMsg();
-        this.isSuccessful = isSuccessful;
+        this.successful = successful;
         this.data = data;
     }
 
-    public ResponseData(int code, String msg, boolean isSuccessful, T data) {
+    public ResponseData(int code, String msg, boolean successful, T data) {
         this.code = code;
         this.msg = msg;
-        this.isSuccessful = isSuccessful;
+        this.successful = successful;
         this.data = data;
     }
 
@@ -37,11 +37,11 @@ public class ResponseData<T> {
     }
 
     public boolean isSuccessful() {
-        return isSuccessful;
+        return successful;
     }
 
     public void setSuccessful(boolean successful) {
-        isSuccessful = successful;
+        this.successful = successful;
     }
 
     public int getCode() {
@@ -60,10 +60,17 @@ public class ResponseData<T> {
         this.data = data;
     }
 
-    public void setStatus(HttpStatusEnum httpStatusEnum, boolean isSuccessful) {
+    public void setStatus(HttpStatusEnum httpStatusEnum, boolean successful) {
         this.code = httpStatusEnum.getCode();
         this.msg = httpStatusEnum.getMsg();
-        this.isSuccessful = isSuccessful;
+        this.successful = successful;
         this.data = null;
+    }
+
+    /**
+     * 响应成功时，将返回的数据包装成ResponseData对象
+     */
+    public static ResponseData<Object> getInstance200(Object o) {
+        return new ResponseData<Object>(o, HttpStatusEnum.SUCCESSFUL, true);
     }
 }

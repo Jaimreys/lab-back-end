@@ -3,10 +3,12 @@
 <mapper namespace="com.lpc.dao.MenuMapper">
     <resultMap id="BaseResultMap" type="com.lpc.entity.Menu">
         <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
         <result column="description" property="description" jdbcType="VARCHAR"/>
         <result column="path" property="path" jdbcType="VARCHAR"/>
         <collection property="childMenus" ofType="com.lpc.entity.Menu">
             <id column="child_id" property="id" jdbcType="INTEGER"/>
+            <result column="child_icon" property="icon" jdbcType="VARCHAR"/>
             <result column="child_description" property="description" jdbcType="VARCHAR"/>
             <result column="child_path" property="path" jdbcType="VARCHAR"/>
         </collection>
@@ -18,9 +20,11 @@
     <select id="selectMenus" resultMap="BaseResultMap">
         select
           p.id,
+          p.icon,
           p.description,
           p.path,
           c.id as child_id,
+          c.icon as child_icon,
           c.description as child_description,
           c.path as child_path
         from menu p

@@ -4,11 +4,20 @@ import java.util.List;
 
 public class Menu {
     private Integer id;
+    private String icon;
     private String description;
     private String path;
     private List<Menu> childMenus;
 
     public Menu() {
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public Integer getId() {

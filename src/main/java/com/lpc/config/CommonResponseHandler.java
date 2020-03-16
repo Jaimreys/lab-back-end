@@ -1,7 +1,6 @@
 package com.lpc.config;
 
 import com.lpc.entity.ResponseData;
-import com.lpc.enumeration.HttpStatusEnum;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
@@ -29,7 +28,7 @@ public class CommonResponseHandler implements ResponseBodyAdvice {
         if (o instanceof ResponseData) {
             return (ResponseData) o;
         } else {
-            return new ResponseData<Object>(o, HttpStatusEnum.SUCCESSFUL, true);
+            return ResponseData.getInstance200(o);
         }
     }
 }
