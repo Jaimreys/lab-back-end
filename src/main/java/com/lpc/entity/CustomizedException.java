@@ -1,5 +1,6 @@
 package com.lpc.entity;
 
+import com.lpc.enumeration.HttpStatusEnum;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -18,6 +19,11 @@ public class CustomizedException extends RuntimeException {
         //500
         this.code = HttpStatus.INTERNAL_SERVER_ERROR.value();
         this.msg = msg;
+    }
+
+    public CustomizedException(HttpStatusEnum httpStatusEnum) {
+        this.code = httpStatusEnum.getCode();
+        this.msg = httpStatusEnum.getMsg();
     }
 
     public int getCode() {

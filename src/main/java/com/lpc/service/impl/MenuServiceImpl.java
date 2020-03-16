@@ -14,7 +14,7 @@ public class MenuServiceImpl implements MenuService {
     private MenuMapper menuMapper;
     private RoleMenuMapper roleMenuMapper;
 
-    @Autowired
+    @Autowired(required = false)
     public MenuServiceImpl(MenuMapper menuMapper,
                            RoleMenuMapper roleMenuMapper) {
         this.menuMapper = menuMapper;

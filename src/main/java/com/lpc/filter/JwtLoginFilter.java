@@ -89,8 +89,18 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         //将token写到响应里
         response.addHeader("Authorization", "Bearer " + jwt);
-        ResponseDataUtil.setDataInResponse(response, null, HttpStatusEnum.SUCCESSFUL);
+        ResponseDataUtil.setDataInResponse(response,
+                null,
+                HttpStatusEnum.SUCCESSFUL,
+                true);
 
         chain.doFilter(request, response);
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        ResponseDataUtil.setDataInResponse400(response,
+                null,
+                HttpStatusEnum.LOGIN_UNSUCCESSFUL);
     }
 }

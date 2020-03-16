@@ -29,7 +29,7 @@ public class CommonResponseHandler implements ResponseBodyAdvice {
         if (o instanceof ResponseData) {
             return (ResponseData) o;
         } else {
-            return new ResponseData<Object>(o, HttpStatusEnum.SUCCESSFUL);
+            return new ResponseData<Object>(o, HttpStatusEnum.SUCCESSFUL, true);
         }
     }
 }

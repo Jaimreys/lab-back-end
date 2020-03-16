@@ -22,12 +22,13 @@ public class ResponseDataUtil {
     private static <T> void setDataInResponse(HttpServletResponse response,
                                               T data,
                                               HttpStatusEnum status,
-                                              HttpStatus httpStatus)
+                                              HttpStatus httpStatus,
+                                              boolean isSuccessful)
             throws IOException {
         response.setContentType("application/json;charset=utf-8");
         response.setStatus(httpStatus.value());
         PrintWriter writer = response.getWriter();
-        writer.write(JsonUtil.responseData2JsonString(new ResponseData<T>(data, status)));
+        writer.write(JsonUtil.responseData2JsonString(new ResponseData<T>(data, status, isSuccessful)));
         writer.flush();
         writer.close();
     }
@@ -42,11 +43,12 @@ public class ResponseDataUtil {
      */
     public static <T> void setDataInResponse(HttpServletResponse response,
                                              T data,
-                                             HttpStatusEnum status) {
+                                             HttpStatusEnum status,
+                                             boolean isSuccessful) {
         try {
             response.setContentType("application/json;charset=utf-8");
             PrintWriter writer = response.getWriter();
-            writer.write(JsonUtil.responseData2JsonString(new ResponseData<T>(data, status)));
+            writer.write(JsonUtil.responseData2JsonString(new ResponseData<T>(data, status, isSuccessful)));
             writer.flush();
             writer.close();
         } catch (IOException e) {
@@ -63,7 +65,7 @@ public class ResponseDataUtil {
                                                 T data,
                                                 HttpStatusEnum statusEnum) {
         try {
-            setDataInResponse(response, data, statusEnum, HttpStatus.OK);
+            setDataInResponse(response, data, statusEnum, HttpStatus.OK, true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,7 +80,7 @@ public class ResponseDataUtil {
                                                 T data,
                                                 HttpStatusEnum statusEnum) {
         try {
-            setDataInResponse(response, data, statusEnum, HttpStatus.BAD_REQUEST);
+            setDataInResponse(response, data, statusEnum, HttpStatus.BAD_REQUEST, false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -93,7 +95,7 @@ public class ResponseDataUtil {
                                                 T data,
                                                 HttpStatusEnum statusEnum) {
         try {
-            setDataInResponse(response, data, statusEnum, HttpStatus.INTERNAL_SERVER_ERROR);
+            setDataInResponse(response, data, statusEnum, HttpStatus.INTERNAL_SERVER_ERROR, false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -103,7 +105,7 @@ public class ResponseDataUtil {
      * 直接返回成功消息以及数据
      */
     public static <T> ResponseData<T> success(T data) {
-        ResponseData<T> responseData = new ResponseData<T>(data, HttpStatusEnum.SUCCESSFUL);
+        ResponseData<T> responseData = new ResponseData<T>(data, HttpStatusEnum.SUCCESSFUL, true);
         return responseData;
     }
 }

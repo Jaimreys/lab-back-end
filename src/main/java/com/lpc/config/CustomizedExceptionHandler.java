@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
@@ -70,8 +69,9 @@ public class CustomizedExceptionHandler {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
 
-        return new ResponseData(ex.getCode(),
+        return new ResponseData<>(ex.getCode(),
                 ex.getMsg(),
+                false,
                 null);
     }
 
@@ -113,15 +113,10 @@ public class CustomizedExceptionHandler {
         //500
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 
-        return new ResponseData(HttpStatusEnum.INTERNAL_SERVER_ERROR.getCode(),
+        return new ResponseData<>(HttpStatusEnum.INTERNAL_SERVER_ERROR.getCode(),
                 HttpStatusEnum.INTERNAL_SERVER_ERROR.getMsg(),
+                false,
                 null);
-    }
-
-    @ExceptionHandler(value = Error.class)
-    public void customizedExceptionHandle(Error error) {
-        error.printStackTrace();
-        logger.error("捕获到系统Error");
     }
 }
 
