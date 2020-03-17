@@ -113,8 +113,7 @@ public class CustomizedExceptionHandler {
         //500
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 
-        return new ResponseData<>(HttpStatusEnum.INTERNAL_SERVER_ERROR.getCode(),
-                HttpStatusEnum.INTERNAL_SERVER_ERROR.getMsg(),
+        return new ResponseData<>(HttpStatusEnum.INTERNAL_SERVER_ERROR,
                 false,
                 null);
     }

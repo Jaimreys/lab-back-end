@@ -11,7 +11,7 @@ public class ResponseData<T> {
     private boolean successful;
     private T data;
 
-    public ResponseData(T data, HttpStatusEnum httpStatusEnum, boolean successful) {
+    public ResponseData(HttpStatusEnum httpStatusEnum, boolean successful, T data) {
         this.code = httpStatusEnum.getCode();
         this.msg = httpStatusEnum.getMsg();
         this.successful = successful;
@@ -71,6 +71,6 @@ public class ResponseData<T> {
      * 响应成功时，将返回的数据包装成ResponseData对象
      */
     public static ResponseData<Object> getInstance200(Object o) {
-        return new ResponseData<Object>(o, HttpStatusEnum.SUCCESSFUL, true);
+        return new ResponseData<Object>(HttpStatusEnum.SUCCESSFUL, true, o);
     }
 }

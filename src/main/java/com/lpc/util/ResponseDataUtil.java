@@ -28,7 +28,7 @@ public class ResponseDataUtil {
         response.setContentType("application/json;charset=utf-8");
         response.setStatus(httpStatus.value());
         PrintWriter writer = response.getWriter();
-        writer.write(JsonUtil.responseData2JsonString(new ResponseData<T>(data, status, isSuccessful)));
+        writer.write(JsonUtil.responseData2JsonString(new ResponseData<T>(status, isSuccessful, data)));
         writer.flush();
         writer.close();
     }
@@ -48,7 +48,7 @@ public class ResponseDataUtil {
         try {
             response.setContentType("application/json;charset=utf-8");
             PrintWriter writer = response.getWriter();
-            writer.write(JsonUtil.responseData2JsonString(new ResponseData<T>(data, status, isSuccessful)));
+            writer.write(JsonUtil.responseData2JsonString(new ResponseData<T>(status, isSuccessful, data)));
             writer.flush();
             writer.close();
         } catch (IOException e) {
@@ -105,7 +105,7 @@ public class ResponseDataUtil {
      * 直接返回成功消息以及数据
      */
     public static <T> ResponseData<T> success(T data) {
-        ResponseData<T> responseData = new ResponseData<T>(data, HttpStatusEnum.SUCCESSFUL, true);
+        ResponseData<T> responseData = new ResponseData<T>(HttpStatusEnum.SUCCESSFUL, true, data);
         return responseData;
     }
 }
