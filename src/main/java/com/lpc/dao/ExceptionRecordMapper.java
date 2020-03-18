@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ExceptionRecordMapper {
-    public void insertException(ExceptionRecord exceptionRecord);
+    void insertException(ExceptionRecord exceptionRecord);
 }

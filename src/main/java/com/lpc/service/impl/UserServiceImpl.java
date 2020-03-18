@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserDetailsService {
     private SystemUserMapper systemUserMapper;
 
-    //构造方法里的报错可以忽略
     @Autowired
     public UserServiceImpl(SystemUserMapper systemUserMapper) {
         this.systemUserMapper = systemUserMapper;
@@ -24,5 +23,19 @@ public class UserServiceImpl implements UserDetailsService {
         SystemUser systemUser = systemUserMapper.selectSystemUserByUsername(s);
         //避免返回null
         return systemUser == null ? new SystemUser() : systemUser;
+    }
+
+    /**
+     * 根据用户名获取系统用户信息
+     */
+    public SystemUser getSystemUserByUsername(String username) {
+        return systemUserMapper.selectSystemUserByUsername(username);
+    }
+
+    /**
+     * 根据用户id更新用户密码
+     */
+    public void updatePasswordByUsername(String username, String password) {
+        systemUserMapper.updatePasswordByUsername(username, password);
     }
 }

@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface MenuMapper {
-    public List<Menu> selectMenus(List<Integer> menuIds);
+    List<Menu> selectMenus(List<Integer> menuIds);
 }

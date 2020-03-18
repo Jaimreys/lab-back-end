@@ -7,7 +7,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class RoleUtil {
+public class SystemUserUtil {
+    /**
+     * 获取登录后保存下来的的用户角色
+     */
     public static int getRole() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -17,5 +20,13 @@ public class RoleUtil {
             role = iterator.next().getAuthority();
         }
         return Integer.valueOf(role);
+    }
+
+    /**
+     * 获取登录后保存下来的用户名
+     */
+    public static String getUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
     }
 }

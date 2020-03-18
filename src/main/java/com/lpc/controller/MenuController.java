@@ -2,7 +2,7 @@ package com.lpc.controller;
 
 import com.lpc.entity.Menu;
 import com.lpc.service.MenuService;
-import com.lpc.util.RoleUtil;
+import com.lpc.util.SystemUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +20,7 @@ public class MenuController {
 
     @GetMapping("/menus")
     public List<Menu> getMenus() {
-        int role = RoleUtil.getRole();
+        int role = SystemUserUtil.getRole();
         return menuService.getMenus(role);
     }
 }
