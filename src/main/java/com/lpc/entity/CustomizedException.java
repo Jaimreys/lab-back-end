@@ -1,6 +1,6 @@
 package com.lpc.entity;
 
-import com.lpc.enumeration.HttpStatusEnum;
+import com.lpc.entity.enumeration.HttpStatusEnum;
 import org.springframework.http.HttpStatus;
 
 /**

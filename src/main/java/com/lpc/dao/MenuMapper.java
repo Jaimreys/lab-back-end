@@ -1,6 +1,6 @@
 package com.lpc.dao;
 
-import com.lpc.entity.Menu;
+import com.lpc.entity.pojo.Menu;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

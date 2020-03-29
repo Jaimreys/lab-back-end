@@ -1,7 +1,7 @@
 package com.lpc.util;
 
 import com.lpc.entity.ResponseData;
-import com.lpc.enumeration.HttpStatusEnum;
+import com.lpc.entity.enumeration.HttpStatusEnum;
 import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpServletResponse;

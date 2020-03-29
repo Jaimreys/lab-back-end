@@ -1,6 +1,4 @@
-package com.lpc.enumeration;
-
-import org.springframework.http.HttpStatus;
+package com.lpc.entity.enumeration;
 
 public enum HttpStatusEnum {
     SUCCESSFUL(2000, "成功"),

@@ -1,6 +1,6 @@
 package com.lpc.service;
 
-import com.lpc.entity.Menu;
+import com.lpc.entity.pojo.Menu;
 
 import java.util.List;
 

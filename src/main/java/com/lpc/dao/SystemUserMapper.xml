@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.lpc.dao.SystemUserMapper">
-    <resultMap id="BaseResultMap" type="com.lpc.entity.SystemUser">
+    <resultMap id="BaseResultMap" type="com.lpc.entity.pojo.SystemUser">
         <id column="username" property="username" jdbcType="VARCHAR"/>
         <result column="real_name" property="realName" jdbcType="VARCHAR"/>
         <result column="password" property="password" jdbcType="VARCHAR"/>
@@ -24,4 +24,41 @@
         set password = #{password}
         where username = #{username}
     </update>
+
+    <select id="selectSystemUsers" resultType="com.lpc.entity.dto.SystemUserDTO">
+        select
+            username,
+            real_name,
+            u.role as role_id,
+            r.description as role
+        from system_user u left join enum_role r
+        on u.role = r.id
+        <if test="realName != ''">
+            where real_name like concat('%',#{realName},'%')
+        </if>
+    </select>
+
+    <select id="selectUserRealNameByUsername" resultType="java.lang.String">
+        select real_name
+        from system_user
+        where username = #{username}
+    </select>
+
+    <delete id="deleteSystemUserByUsername">
+        delete from system_user
+        where username = #{username}
+    </delete>
+
+    <update id="updateUserRole" parameterType="com.lpc.entity.pojo.SystemUser">
+        update system_user
+        set role = #{role}
+        where username = #{username}
+    </update>
+
+    <insert id="insertSystemUser" parameterType="com.lpc.entity.pojo.SystemUser">
+        insert into system_user
+            (username, real_name, password, role)
+        values
+            (#{username}, #{realName}, #{password}, #{role})
+    </insert>
 </mapper>

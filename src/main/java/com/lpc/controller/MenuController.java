@@ -1,6 +1,6 @@
 package com.lpc.controller;
 
-import com.lpc.entity.Menu;
+import com.lpc.entity.pojo.Menu;
 import com.lpc.service.MenuService;
 import com.lpc.util.SystemUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.lpc.entity;
+package com.lpc.entity.pojo;
 
 import java.util.Date;
 

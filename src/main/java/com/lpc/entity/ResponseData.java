@@ -1,6 +1,6 @@
 package com.lpc.entity;
 
-import com.lpc.enumeration.HttpStatusEnum;
+import com.lpc.entity.enumeration.HttpStatusEnum;
 
 /**
  * 放到响应里的数据，由两部分构成

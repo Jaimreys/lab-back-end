@@ -2,9 +2,9 @@ package com.lpc.config;
 
 import com.lpc.dao.ExceptionRecordMapper;
 import com.lpc.entity.CustomizedException;
-import com.lpc.entity.ExceptionRecord;
+import com.lpc.entity.pojo.ExceptionRecord;
 import com.lpc.entity.ResponseData;
-import com.lpc.enumeration.HttpStatusEnum;
+import com.lpc.entity.enumeration.HttpStatusEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

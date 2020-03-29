@@ -1,8 +1,8 @@
 package com.lpc.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lpc.entity.SystemUser;
-import com.lpc.enumeration.HttpStatusEnum;
+import com.lpc.entity.pojo.SystemUser;
+import com.lpc.entity.enumeration.HttpStatusEnum;
 import com.lpc.util.ResponseDataUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -73,7 +73,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
         //数据库设计了一个用户只会有一个角色
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        String role = "0";
+        String role = "-1";
         if (iterator.hasNext()) {
             role = iterator.next().getAuthority();
         }

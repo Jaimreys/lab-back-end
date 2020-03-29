@@ -2,7 +2,7 @@ package com.lpc.service.impl;
 
 import com.lpc.dao.MenuMapper;
 import com.lpc.dao.RoleMenuMapper;
-import com.lpc.entity.Menu;
+import com.lpc.entity.pojo.Menu;
 import com.lpc.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ public class MenuServiceImpl implements MenuService {
     private MenuMapper menuMapper;
     private RoleMenuMapper roleMenuMapper;
 
-    @Autowired(required = false)
+    @Autowired
     public MenuServiceImpl(MenuMapper menuMapper,
                            RoleMenuMapper roleMenuMapper) {
         this.menuMapper = menuMapper;

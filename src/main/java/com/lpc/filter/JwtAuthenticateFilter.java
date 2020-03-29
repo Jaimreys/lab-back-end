@@ -1,9 +1,7 @@
 package com.lpc.filter;
 
-import com.lpc.entity.CustomizedException;
-import com.lpc.enumeration.HttpStatusEnum;
+import com.lpc.entity.enumeration.HttpStatusEnum;
 import com.lpc.util.ResponseDataUtil;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import io.jsonwebtoken.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -61,7 +59,6 @@ public class JwtAuthenticateFilter extends BasicAuthenticationFilter {
                 UsernamePasswordAuthenticationToken token
                         = new UsernamePasswordAuthenticationToken(username, null, roles);
                 SecurityContextHolder.getContext().setAuthentication(token);
-
 
                 chain.doFilter(request, response);
             } catch (ExpiredJwtException e) {
