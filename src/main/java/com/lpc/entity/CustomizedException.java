@@ -17,7 +17,7 @@ public class CustomizedException extends RuntimeException {
 
     public CustomizedException(String msg) {
         //500
-        this.code = HttpStatus.INTERNAL_SERVER_ERROR.value();
+        this.code = HttpStatusEnum.INTERNAL_SERVER_ERROR.getCode();
         this.msg = msg;
     }
 

@@ -28,9 +28,9 @@ public class UserServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //在数据库里面查询到这个用户
-        SystemUser systemUser = systemUserMapper.selectSystemUserByUsername(s);
+        SystemUser systemUser = systemUserMapper.selectSystemUserByUsername(username);
         //避免返回null
         return systemUser == null ? new SystemUser() : systemUser;
     }

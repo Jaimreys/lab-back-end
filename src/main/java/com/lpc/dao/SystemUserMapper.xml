@@ -5,11 +5,11 @@
         <id column="username" property="username" jdbcType="VARCHAR"/>
         <result column="real_name" property="realName" jdbcType="VARCHAR"/>
         <result column="password" property="password" jdbcType="VARCHAR"/>
-        <result column="role" property="role" jdbcType="INTEGER"/>
-        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="role_id" property="roleId" jdbcType="INTEGER"/>
+        <result column="status_id" property="statusId" jdbcType="INTEGER"/>
     </resultMap>
     <sql id="Base_Column_List">
-        username, real_name, password, role, status
+        username, real_name, password, role_id, status_id
     </sql>
 
     <select id="selectSystemUserByUsername" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -29,10 +29,10 @@
         select
             username,
             real_name,
-            u.role as role_id,
+            role_id,
             r.description as role
         from system_user u left join enum_role r
-        on u.role = r.id
+        on u.role_id = r.id
         <if test="realName != ''">
             where real_name like concat('%',#{realName},'%')
         </if>
@@ -51,14 +51,14 @@
 
     <update id="updateUserRole" parameterType="com.lpc.entity.pojo.SystemUser">
         update system_user
-        set role = #{role}
+        set role_id = #{roleId}
         where username = #{username}
     </update>
 
     <insert id="insertSystemUser" parameterType="com.lpc.entity.pojo.SystemUser">
         insert into system_user
-            (username, real_name, password, role)
+            (username, real_name, password, role_id)
         values
-            (#{username}, #{realName}, #{password}, #{role})
+            (#{username}, #{realName}, #{password}, #{roleId})
     </insert>
 </mapper>

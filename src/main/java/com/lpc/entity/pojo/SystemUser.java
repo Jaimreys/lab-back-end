@@ -11,8 +11,8 @@ public class SystemUser implements UserDetails {
     private String username;
     private String realName;
     private String password;
-    private Integer role;
-    private Integer status;
+    private Integer roleId;
+    private Integer statusId;
 
     public SystemUser() {
     }
@@ -33,20 +33,20 @@ public class SystemUser implements UserDetails {
         this.password = password;
     }
 
-    public Integer getRole() {
-        return role;
+    public Integer getRoleId() {
+        return roleId;
     }
 
-    public void setRole(Integer role) {
-        this.role = role;
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
     }
 
-    public Integer getStatus() {
-        return status;
+    public Integer getStatusId() {
+        return statusId;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setStatusId(Integer statusId) {
+        this.statusId = statusId;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class SystemUser implements UserDetails {
         //将数据库中的role字段保存在类的Authorities中
         List<GrantedAuthority> roles = new ArrayList<>();
         roles.add(() -> {
-            return role.toString();
+            return roleId.toString();
         });
         return roles;
     }
