@@ -13,10 +13,13 @@ public class RoleServiceImpl implements RoleService {
     private EnumRoleMapper enumRoleMapper;
 
     @Autowired
-    public  RoleServiceImpl(EnumRoleMapper enumRoleMapper) {
+    public RoleServiceImpl(EnumRoleMapper enumRoleMapper) {
         this.enumRoleMapper = enumRoleMapper;
     }
 
+    /**
+     * 获取所有用户角色
+     */
     @Override
     public List<EnumRole> getAllRoles() {
         return enumRoleMapper.getAllRoles();

@@ -1,13 +1,12 @@
 package com.lpc.entity.dto;
 
-public class SystemUserDTO {
-    private String username;
+public class SystemUserRoleDTO {
+    private Long username;
     private String realName;
     private Integer roleId;
     private String role;
-    private Integer status;
 
-    public SystemUserDTO() {
+    public SystemUserRoleDTO() {
     }
 
     public Integer getRoleId() {
@@ -18,7 +17,7 @@ public class SystemUserDTO {
         this.roleId = roleId;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(Long username) {
         this.username = username;
     }
 
@@ -38,15 +37,7 @@ public class SystemUserDTO {
         this.role = role;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getUsername() {
+    public Long getUsername() {
         return username;
     }
 }

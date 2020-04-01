@@ -1,4 +1,4 @@
-package com.lpc.config;
+package com.lpc.component;
 
 import com.lpc.dao.ExceptionRecordMapper;
 import com.lpc.entity.CustomizedException;

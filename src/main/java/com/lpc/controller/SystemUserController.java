@@ -2,7 +2,7 @@ package com.lpc.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.lpc.entity.dto.SystemUserDTO;
+import com.lpc.entity.dto.SystemUserRoleDTO;
 import com.lpc.entity.pojo.SystemUser;
 import com.lpc.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class SystemUserController {
      * 初始化密码
      */
     @PutMapping("/user/password/init")
-    public void initializePassword(@RequestParam("username") String username) {
+    public void initializePassword(@RequestParam("username") Long username) {
         userService.initializePassword(username);
     }
 
@@ -49,12 +49,12 @@ public class SystemUserController {
      * 获取所有账户
      */
     @GetMapping("/users")
-    public PageInfo<SystemUserDTO> getSystemUsers(@RequestParam("pageNum") int pageNum,
-                                                  @RequestParam("pageSize") int pageSize,
-                                                  @RequestParam("realName") String realName) {
+    public PageInfo<SystemUserRoleDTO> getSystemUsers(@RequestParam("pageNum") int pageNum,
+                                                      @RequestParam("pageSize") int pageSize,
+                                                      @RequestParam("realName") String realName) {
         //如果前面什么都没传，realName==""
         PageHelper.startPage(pageNum, pageSize);
-        List<SystemUserDTO> users = userService.getSystemUsers(realName);
+        List<SystemUserRoleDTO> users = userService.getSystemUsers(realName);
         return new PageInfo<>(users);
     }
 
@@ -62,7 +62,7 @@ public class SystemUserController {
      * 删除用户
      */
     @DeleteMapping("/user")
-    public void deleteSystemUser(@RequestParam("username") String username) {
+    public void deleteSystemUser(@RequestParam("username") Long username) {
         userService.deleteSystemUser(username);
     }
 

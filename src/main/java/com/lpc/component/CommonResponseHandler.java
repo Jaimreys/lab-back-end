@@ -1,4 +1,4 @@
-package com.lpc.config;
+package com.lpc.component;
 
 import com.lpc.entity.ResponseData;
 import org.springframework.core.MethodParameter;

@@ -1,0 +1,61 @@
+package com.lpc.entity.pojo;
+
+import java.math.BigDecimal;
+import java.time.Duration;
+
+/**
+ * 状态统计信息
+ */
+public class StatusStatistics {
+    private Integer statusId;
+    private String status;
+    // todo 持续时间用什么类型表示，还有待商榷
+    private Duration duration;
+    // 状态时间在一天时间中占的比例
+    private BigDecimal proportion;
+
+    public StatusStatistics() {
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Integer getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(Integer statusId) {
+        this.statusId = statusId;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public BigDecimal getProportion() {
+        return proportion;
+    }
+
+    public void setProportion(BigDecimal proportion) {
+        this.proportion = proportion;
+    }
+
+    @Override
+    public String toString() {
+        return "StatusStatistics{" +
+                "statusId=" + statusId +
+                ", status='" + status + '\'' +
+                ", duration=" + duration +
+                ", proportion=" + proportion +
+                '}';
+    }
+}

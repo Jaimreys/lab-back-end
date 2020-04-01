@@ -2,7 +2,7 @@ package com.lpc.service.impl;
 
 import com.lpc.dao.SystemUserMapper;
 import com.lpc.entity.CustomizedException;
-import com.lpc.entity.dto.SystemUserDTO;
+import com.lpc.entity.dto.SystemUserRoleDTO;
 import com.lpc.entity.pojo.SystemUser;
 import com.lpc.util.SystemUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //在数据库里面查询到这个用户
-        SystemUser systemUser = systemUserMapper.selectSystemUserByUsername(username);
+        SystemUser systemUser = systemUserMapper.selectSystemUserByUsername(Long.valueOf(username));
         //避免返回null
         return systemUser == null ? new SystemUser() : systemUser;
     }
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserDetailsService {
     /**
      * 根据用户名获取系统用户信息
      */
-    public SystemUser getSystemUserByUsername(String username) {
+    public SystemUser getSystemUserByUsername(Long username) {
         return systemUserMapper.selectSystemUserByUsername(username);
     }
 
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserDetailsService {
      * 更新用户密码
      */
     public void updatePassword(String oldPassword, String newPassword) {
-        String username = SystemUserUtil.getUsername();
+        Long username = SystemUserUtil.getUsername();
         SystemUser systemUser = this.getSystemUserByUsername(username);
         if (passwordEncoder.matches(oldPassword, systemUser.getPassword())) {
             //原密码正确，更新到新密码
@@ -60,21 +60,21 @@ public class UserServiceImpl implements UserDetailsService {
     /**
      * 根据用户id更新用户密码
      */
-    private void updatePasswordByUsername(String username, String newPassword) {
+    private void updatePasswordByUsername(Long username, String newPassword) {
         systemUserMapper.updatePasswordByUsername(username, newPassword);
     }
 
     /**
      * 初始化密码为123456
      */
-    public void initializePassword(String username) {
+    public void initializePassword(Long username) {
         this.updatePasswordByUsername(username, passwordEncoder.encode("123456"));
     }
 
     /**
      * 获取用户信息
      */
-    public List<SystemUserDTO> getSystemUsers(String realName) {
+    public List<SystemUserRoleDTO> getSystemUsers(String realName) {
         return systemUserMapper.selectSystemUsers(realName);
     }
 
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserDetailsService {
     /**
      * 删除用户
      */
-    public void deleteSystemUser(String username) {
+    public void deleteSystemUser(Long username) {
         systemUserMapper.deleteSystemUserByUsername(username);
     }
 
@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserDetailsService {
      * 添加用户
      */
     public void addSystemUser(SystemUser systemUser) {
-        SystemUser oldUser = systemUserMapper.selectSystemUserByUsername(systemUser.getUsername());
+        SystemUser oldUser = systemUserMapper.selectSystemUserByUsername(systemUser.getLongUsername());
         if (oldUser == null) {
             systemUser.setPassword(passwordEncoder.encode("123456"));
             systemUserMapper.insertSystemUser(systemUser);

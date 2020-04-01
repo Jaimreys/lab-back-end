@@ -12,47 +12,59 @@
         username, real_name, password, role_id, status_id
     </sql>
 
-    <select id="selectSystemUserByUsername" resultMap="BaseResultMap" parameterType="java.lang.String">
+    <select id="selectSystemUserByUsername" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from system_user
-        where username = ${username}
+        <where>
+            username = #{username}
+        </where>
     </select>
 
     <update id="updatePasswordByUsername">
         update system_user
         set password = #{password}
-        where username = #{username}
+        <where>
+            username = #{username}
+        </where>
     </update>
 
-    <select id="selectSystemUsers" resultType="com.lpc.entity.dto.SystemUserDTO">
+    <select id="selectSystemUsers" resultType="com.lpc.entity.dto.SystemUserRoleDTO">
         select
-            username,
-            real_name,
-            role_id,
-            r.description as role
+        u.username,
+        u.real_name,
+        u.role_id,
+        r.description as role
         from system_user u left join enum_role r
         on u.role_id = r.id
-        <if test="realName != ''">
-            where real_name like concat('%',#{realName},'%')
-        </if>
+        <where>
+            <if test="realName != ''">
+                real_name like concat('%',#{realName},'%')
+            </if>
+        </where>
     </select>
 
     <select id="selectUserRealNameByUsername" resultType="java.lang.String">
         select real_name
         from system_user
-        where username = #{username}
+        <where>
+            username = #{username}
+        </where>
     </select>
 
     <delete id="deleteSystemUserByUsername">
         delete from system_user
-        where username = #{username}
+        <where>
+            username = #{username}
+        </where>
     </delete>
 
     <update id="updateUserRole" parameterType="com.lpc.entity.pojo.SystemUser">
         update system_user
         set role_id = #{roleId}
-        where username = #{username}
+        <where>
+            username = #{username}
+        </where>
     </update>
 
     <insert id="insertSystemUser" parameterType="com.lpc.entity.pojo.SystemUser">
@@ -61,4 +73,21 @@
         values
             (#{username}, #{realName}, #{password}, #{roleId})
     </insert>
+
+    <select id="selectStudents" resultType="com.lpc.entity.dto.StudentDTO">
+        select
+        u.username,
+        u.real_name,
+        u.status_id,
+        s.status as status
+        from system_user u
+        left join enum_status s on u.status_id = s.id
+        left join enum_role r on u.role_id = r.id
+        <where>
+            r.role = 'student'
+            <if test="realName != ''">
+                and real_name like concat('%',#{realName},'%')
+            </if>
+        </where>
+    </select>
 </mapper>

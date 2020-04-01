@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class SystemUser implements UserDetails {
-    private String username;
+    private Long username;
     private String realName;
     private String password;
     private Integer roleId;
@@ -17,7 +17,7 @@ public class SystemUser implements UserDetails {
     public SystemUser() {
     }
 
-    public void setUsername(String username) {
+    public void setUsername(Long username) {
         this.username = username;
     }
 
@@ -64,8 +64,15 @@ public class SystemUser implements UserDetails {
         return password;
     }
 
+    /**
+     * 这个方法是重写的，所以必须返回String
+     */
     @Override
     public String getUsername() {
+        return String.valueOf(username);
+    }
+
+    public Long getLongUsername() {
         return username;
     }
 

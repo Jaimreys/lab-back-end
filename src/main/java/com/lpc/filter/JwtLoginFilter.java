@@ -49,8 +49,6 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
             //下面的代码适用于请求体
             SystemUser systemUser = new ObjectMapper().readValue(request.getInputStream(), SystemUser.class);
-            //用户名去掉空格
-            systemUser.setUsername(systemUser.getUsername().trim());
 
             UsernamePasswordAuthenticationToken token
                     = new UsernamePasswordAuthenticationToken(systemUser.getUsername(), systemUser.getPassword());
