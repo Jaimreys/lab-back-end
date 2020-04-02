@@ -8,9 +8,11 @@ import java.time.Duration;
  */
 public class StatusStatistics {
     private Integer statusId;
+    //2020/04/02 状态名称这个字段可能可以删除，如果删除，把StdentServiceImpl里的getStudentStatusMonthly()也改一下
     private String status;
     // todo 持续时间用什么类型表示，还有待商榷
-    private Duration duration;
+    // 秒数
+    private Integer duration;
     // 状态时间在一天时间中占的比例
     private BigDecimal proportion;
 
@@ -33,11 +35,11 @@ public class StatusStatistics {
         this.statusId = statusId;
     }
 
-    public Duration getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(Duration duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 

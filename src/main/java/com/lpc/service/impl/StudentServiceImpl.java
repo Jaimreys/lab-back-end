@@ -3,6 +3,7 @@ package com.lpc.service.impl;
 import com.lpc.dao.EnumStatusMapper;
 import com.lpc.dao.StudentStatusRecordMapper;
 import com.lpc.dao.SystemUserMapper;
+import com.lpc.entity.dto.StatusStatisticsDTO;
 import com.lpc.entity.dto.StudentDTO;
 import com.lpc.entity.pojo.EnumStatus;
 import com.lpc.entity.pojo.StatusStatistics;
@@ -15,7 +16,6 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,7 +51,7 @@ public class StudentServiceImpl implements StudentService {
      * todo 这里还要考虑到当前月还没到的那几天，以及当前天还没到的那几个小时
      */
     @Override
-    public List<StatusStatistics>[] getStudentStatusMonthly(Long username, Calendar start) {
+    public StatusStatisticsDTO[] getStudentStatusMonthly(Long username, Calendar start) {
         // 月份0-11
         // 生成统计的结束时间，期限为一个月
         Calendar end = (Calendar) start.clone();
@@ -63,15 +63,15 @@ public class StudentServiceImpl implements StudentService {
                 end.getTime());
 
         //获取当前数据库里有的所有状态
-        List<EnumStatus> statuses = enumStatusMapper.selectStatus();
-        int statusNum = statuses.size();
+        List<EnumStatus> statusList = enumStatusMapper.selectStatus();
+        int statusNum = statusList.size();
         //将状态转为map
-        Map<Integer, String> statusMap = statuses.stream()
+        Map<Integer, String> statusMap = statusList.stream()
                 .collect(Collectors.toMap(EnumStatus::getId, EnumStatus::getStatus));
 
         // 计算当前月有几天
         int daysInMonth = start.getActualMaximum(Calendar.DATE);
-        List<StatusStatistics>[] result = new List[daysInMonth];
+        List<StatusStatistics>[] resultByDay = new List[daysInMonth];
 
         //聚合同一天的所有个状态
         Map<Date, List<StudentStatusRecord>> mapByDate = studentStatusRecords.stream()
@@ -89,7 +89,6 @@ public class StudentServiceImpl implements StudentService {
                     long time = record.getStatusDuration().getTime() + MILLIS_IN_EIGHT_HOURS;
                     sumMillis += time;
                 }
-                System.out.println(sumMillis);
                 Date sumDate = new Date(sumMillis);
 
                 //形成一条统计信息
@@ -99,7 +98,7 @@ public class StudentServiceImpl implements StudentService {
                 //计算持续时间
                 Instant endInstant = Instant.ofEpochMilli(sumDate.getTime());
                 Duration duration = Duration.between(ZERO_INSTANT, endInstant);
-                statusStatistics.setDuration(duration);
+                statusStatistics.setDuration(Long.valueOf(duration.getSeconds()).intValue());
                 //计算比例
                 BigDecimal proportion = BigDecimal.valueOf(
                         duration.getSeconds()).divide(BigDecimal.valueOf(SECONDS_IN_DAY),
@@ -113,9 +112,38 @@ public class StudentServiceImpl implements StudentService {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(dateKey);
             int index = calendar.get(Calendar.DAY_OF_MONTH) - 1;
-            result[index] = statusStatisticsList;
+            resultByDay[index] = statusStatisticsList;
         });
 
-        return result;
+        //todo 后台需要调整一下返回数据
+        //返回一个数组，数组长度是状态的数量，每个元素包含状态id,状态名称，还有一个数组，包含每天的状态秒数（int）
+        StatusStatisticsDTO[] resultByStatus = new StatusStatisticsDTO[statusNum];
+        for (int i = 0; i < statusNum; i++) {
+            Integer[] dailyDuration = new Integer[daysInMonth];
+            //j表示一个月的天数，如一号，二号，三号
+            for (int j = 0; j < daysInMonth; j++) {
+                //如果是空的，就设为0
+                if (resultByDay[j] == null) {
+                    dailyDuration[j] = 0;
+                } else {
+                    for (StatusStatistics statusStatistics : resultByDay[j]) {
+                        //如果这一天有这种状态的时间
+                        if (statusList.get(i).getId().equals(statusStatistics.getStatusId())) {
+                            dailyDuration[j] = statusStatistics.getDuration();
+                        }
+                    }
+                    //如果循环结束还是空的，就赋值为0
+                    if (dailyDuration[j] == null) {
+                        dailyDuration[j] = 0;
+                    }
+                }
+            }
+            StatusStatisticsDTO dto = new StatusStatisticsDTO();
+            dto.setName(statusList.get(i).getStatus());
+            dto.setData(dailyDuration);
+            resultByStatus[i] = dto;
+        }
+
+        return resultByStatus;
     }
 }

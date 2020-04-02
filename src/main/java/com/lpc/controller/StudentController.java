@@ -2,6 +2,7 @@ package com.lpc.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.lpc.entity.dto.StatusStatisticsDTO;
 import com.lpc.entity.dto.StudentDTO;
 import com.lpc.entity.pojo.StatusStatistics;
 import com.lpc.service.StudentService;
@@ -34,8 +35,8 @@ public class StudentController {
 
     // 两种统计，一种是统计每个人每天的状态，一种是统计每天每个人的状态
     @GetMapping("/student/month/status")
-    public List<StatusStatistics>[] getStudentStatusMonthly(@RequestParam("username") Long username,
-                                                            @RequestParam("month") Calendar startMonth) {
+    public StatusStatisticsDTO[] getStudentStatusMonthly(@RequestParam("username") Long username,
+                                                         @RequestParam("month") Calendar startMonth) {
         return studentService.getStudentStatusMonthly(username, startMonth);
     }
 }
