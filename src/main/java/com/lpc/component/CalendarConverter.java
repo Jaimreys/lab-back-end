@@ -5,6 +5,10 @@ import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -12,9 +16,9 @@ import java.util.Date;
  * 自定义的Date转换类，负责接收前台传回来的时间数据并转为Java的Calendar类
  */
 @Component
-public class CalendarConverter implements Converter<String, Calendar> {
+public class CalendarConverter implements Converter<String, LocalDateTime> {
     @Override
-    public Calendar convert(String source) {
+    public LocalDateTime convert(String source) {
         String value = source.trim();
         if ("".equals(value)) {
             return null;
@@ -39,7 +43,7 @@ public class CalendarConverter implements Converter<String, Calendar> {
      * @param format  String 格式
      * @return Date 日期
      */
-    private Calendar parseDate(String dateStr, String format) {
+    private LocalDateTime parseDate(String dateStr, String format) {
         Date date = null;
         try {
             DateFormat dateFormat = new SimpleDateFormat(format);
@@ -47,8 +51,9 @@ public class CalendarConverter implements Converter<String, Calendar> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return calendar;
+
+       return date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 }

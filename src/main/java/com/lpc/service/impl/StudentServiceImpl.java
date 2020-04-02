@@ -12,18 +12,17 @@ import com.lpc.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.Instant;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
     //定义常量
-    private final Date ZERO_TIME = new Date(0);
     private final Instant ZERO_INSTANT = Instant.ofEpochMilli(0);
-    private final long SECONDS_IN_DAY = 24 * 60 * 60;
     private final long MILLIS_IN_EIGHT_HOURS = 8 * 60 * 60 * 1000;
 
     private SystemUserMapper systemUserMapper;
@@ -51,16 +50,15 @@ public class StudentServiceImpl implements StudentService {
      * todo 这里还要考虑到当前月还没到的那几天，以及当前天还没到的那几个小时
      */
     @Override
-    public StatusStatisticsDTO[] getStudentStatusMonthly(Long username, Calendar start) {
+    public StatusStatisticsDTO[] getStudentStatusMonthly(Long username, LocalDateTime start) {
         // 月份0-11
-        // 生成统计的结束时间，期限为一个月
-        Calendar end = (Calendar) start.clone();
-        end.add(Calendar.MONTH, 1);
+        // 生成统计的结束时间，为当月的最后一天
+        LocalDateTime end = start.with(TemporalAdjusters.lastDayOfMonth());
 
         // 一次性获取所有数据，然后通过stream在Java处理
         List<StudentStatusRecord> studentStatusRecords = studentStatusRecordMapper.selectStudentStatusMonthly(username,
-                start.getTime(),
-                end.getTime());
+                Date.from(start.atZone(ZoneId.systemDefault()).toInstant()),
+                Date.from(end.atZone(ZoneId.systemDefault()).toInstant()));
 
         //获取当前数据库里有的所有状态
         List<EnumStatus> statusList = enumStatusMapper.selectStatus();
@@ -70,8 +68,8 @@ public class StudentServiceImpl implements StudentService {
                 .collect(Collectors.toMap(EnumStatus::getId, EnumStatus::getStatus));
 
         // 计算当前月有几天
-        int daysInMonth = start.getActualMaximum(Calendar.DATE);
-        List<StatusStatistics>[] resultByDay = new List[daysInMonth];
+        int daysInMonth = start.toLocalDate().lengthOfMonth();
+        List<StatusStatistics>[] resultByDay = new ArrayList[daysInMonth];
 
         //聚合同一天的所有个状态
         Map<Date, List<StudentStatusRecord>> mapByDate = studentStatusRecords.stream()
@@ -83,22 +81,16 @@ public class StudentServiceImpl implements StudentService {
             Map<Integer, List<StudentStatusRecord>> mapByStatus = dateValue.stream()
                     .collect(Collectors.groupingBy(StudentStatusRecord::getStatusId));
             mapByStatus.forEach((statusKey, statusValue) -> {
-                //根据状态将持续时间求和
-                long sumMillis = 0;
-                for (StudentStatusRecord record : statusValue) {
-                    long time = record.getStatusDuration().getTime() + MILLIS_IN_EIGHT_HOURS;
-                    sumMillis += time;
-                }
-                Date sumDate = new Date(sumMillis);
+                //计算一种状态持续时间的总和
+                Integer sumDuration = statusValue.stream()
+                        .map(StudentStatusRecord::getStatusDuration)
+                        .reduce(0, Integer::sum);
 
                 //形成一条统计信息
                 StatusStatistics statusStatistics = new StatusStatistics();
                 statusStatistics.setStatusId(statusKey);
                 statusStatistics.setStatus(statusMap.get(statusKey));
-                //计算持续时间
-                Instant endInstant = Instant.ofEpochMilli(sumDate.getTime());
-                Duration duration = Duration.between(ZERO_INSTANT, endInstant);
-                statusStatistics.setDuration(Long.valueOf(duration.getSeconds()).intValue());
+                statusStatistics.setDuration(sumDuration);
                 //添加到数组中
                 // todo 没有的状态需不需要添加？
                 statusStatisticsList.add(statusStatistics);

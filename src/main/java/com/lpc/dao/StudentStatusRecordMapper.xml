@@ -8,7 +8,7 @@
         <result column="status_id" property="statusId" jdbcType="INTEGER"/>
         <result column="status_start_date" property="statusStartDate" jdbcType="DATE"/>
         <result column="status_start_time" property="statusStartTime" jdbcType="TIME"/>
-        <result column="status_duration" property="statusDuration" jdbcType="TIME"/>
+        <result column="status_duration" property="statusDuration" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">

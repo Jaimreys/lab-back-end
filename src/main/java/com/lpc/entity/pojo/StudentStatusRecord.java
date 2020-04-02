@@ -16,7 +16,7 @@ public class StudentStatusRecord {
 
     private Date statusStartTime;
 
-    private Date statusDuration;
+    private Integer statusDuration;
 
     public Integer getId() {
         return id;
@@ -66,11 +66,11 @@ public class StudentStatusRecord {
         this.statusStartTime = statusStartTime;
     }
 
-    public Date getStatusDuration() {
+    public Integer getStatusDuration() {
         return statusDuration;
     }
 
-    public void setStatusDuration(Date statusDuration) {
+    public void setStatusDuration(Integer statusDuration) {
         this.statusDuration = statusDuration;
     }
 }
