@@ -99,12 +99,6 @@ public class StudentServiceImpl implements StudentService {
                 Instant endInstant = Instant.ofEpochMilli(sumDate.getTime());
                 Duration duration = Duration.between(ZERO_INSTANT, endInstant);
                 statusStatistics.setDuration(Long.valueOf(duration.getSeconds()).intValue());
-                //计算比例
-                BigDecimal proportion = BigDecimal.valueOf(
-                        duration.getSeconds()).divide(BigDecimal.valueOf(SECONDS_IN_DAY),
-                        4,
-                        BigDecimal.ROUND_HALF_UP);
-                statusStatistics.setProportion(proportion);
                 //添加到数组中
                 // todo 没有的状态需不需要添加？
                 statusStatisticsList.add(statusStatistics);

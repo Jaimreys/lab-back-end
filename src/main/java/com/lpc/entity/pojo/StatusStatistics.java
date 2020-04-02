@@ -13,8 +13,6 @@ public class StatusStatistics {
     // todo 持续时间用什么类型表示，还有待商榷
     // 秒数
     private Integer duration;
-    // 状态时间在一天时间中占的比例
-    private BigDecimal proportion;
 
     public StatusStatistics() {
     }
@@ -41,23 +39,5 @@ public class StatusStatistics {
 
     public void setDuration(Integer duration) {
         this.duration = duration;
-    }
-
-    public BigDecimal getProportion() {
-        return proportion;
-    }
-
-    public void setProportion(BigDecimal proportion) {
-        this.proportion = proportion;
-    }
-
-    @Override
-    public String toString() {
-        return "StatusStatistics{" +
-                "statusId=" + statusId +
-                ", status='" + status + '\'' +
-                ", duration=" + duration +
-                ", proportion=" + proportion +
-                '}';
     }
 }
