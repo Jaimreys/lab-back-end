@@ -13,18 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
-import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
-    //定义常量
-    private final Instant ZERO_INSTANT = Instant.ofEpochMilli(0);
-    private final long MILLIS_IN_EIGHT_HOURS = 8 * 60 * 60 * 1000;
-
     private SystemUserMapper systemUserMapper;
     private StudentStatusRecordMapper studentStatusRecordMapper;
     private EnumStatusMapper enumStatusMapper;
@@ -51,14 +45,14 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public StatusStatisticsDTO[] getStudentStatusMonthly(Long username, LocalDateTime start) {
-        // 月份0-11
-        // 生成统计的结束时间，为当月的最后一天
-        LocalDateTime end = start.with(TemporalAdjusters.lastDayOfMonth());
+        LocalDate startDay = start.toLocalDate();
+        //当月最后一天
+        LocalDate endDay = startDay.with(TemporalAdjusters.lastDayOfMonth());
 
         // 一次性获取所有数据，然后通过stream在Java处理
         List<StudentStatusRecord> studentStatusRecords = studentStatusRecordMapper.selectStudentStatusMonthly(username,
-                Date.from(start.atZone(ZoneId.systemDefault()).toInstant()),
-                Date.from(end.atZone(ZoneId.systemDefault()).toInstant()));
+                startDay,
+                endDay);
 
         //获取当前数据库里有的所有状态
         List<EnumStatus> statusList = enumStatusMapper.selectStatus();
@@ -72,7 +66,7 @@ public class StudentServiceImpl implements StudentService {
         List<StatusStatistics>[] resultByDay = new ArrayList[daysInMonth];
 
         //聚合同一天的所有个状态
-        Map<Date, List<StudentStatusRecord>> mapByDate = studentStatusRecords.stream()
+        Map<LocalDate, List<StudentStatusRecord>> mapByDate = studentStatusRecords.stream()
                 .collect(Collectors.groupingBy(StudentStatusRecord::getStatusStartDate));
         mapByDate.forEach((dateKey, dateValue) -> {
             //这个list里包含的是同一天中的各个状态
@@ -92,16 +86,13 @@ public class StudentServiceImpl implements StudentService {
                 statusStatistics.setStatus(statusMap.get(statusKey));
                 statusStatistics.setDuration(sumDuration);
                 //添加到数组中
-                // todo 没有的状态需不需要添加？
                 statusStatisticsList.add(statusStatistics);
             });
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(dateKey);
-            int index = calendar.get(Calendar.DAY_OF_MONTH) - 1;
+            //将天数-1作为索引
+            int index = dateKey.getDayOfMonth() - 1;
             resultByDay[index] = statusStatisticsList;
         });
 
-        //todo 后台需要调整一下返回数据
         //返回一个数组，数组长度是状态的数量，每个元素包含状态id,状态名称，还有一个数组，包含每天的状态秒数（int）
         StatusStatisticsDTO[] resultByStatus = new StatusStatisticsDTO[statusNum];
         for (int i = 0; i < statusNum; i++) {

@@ -4,7 +4,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lpc.entity.dto.StatusStatisticsDTO;
 import com.lpc.entity.dto.StudentDTO;
-import com.lpc.entity.pojo.StatusStatistics;
 import com.lpc.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 @RestController

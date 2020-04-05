@@ -5,15 +5,12 @@ import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
- * 自定义的Date转换类，负责接收前台传回来的时间数据并转为Java的Calendar类
+ * 自定义的Date转换类，负责接收前台传回来的时间数据并转为Java的LocalDateTime类
  */
 @Component
 public class CalendarConverter implements Converter<String, LocalDateTime> {

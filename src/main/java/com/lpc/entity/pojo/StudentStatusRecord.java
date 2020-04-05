@@ -1,7 +1,8 @@
 package com.lpc.entity.pojo;
 
-import java.sql.Time;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class StudentStatusRecord {
     private Integer id;
@@ -12,9 +13,9 @@ public class StudentStatusRecord {
 
     private Integer statusId;
 
-    private Date statusStartDate;
+    private LocalDate statusStartDate;
 
-    private Date statusStartTime;
+    private LocalTime statusStartTime;
 
     private Integer statusDuration;
 
@@ -50,19 +51,19 @@ public class StudentStatusRecord {
         this.statusId = statusId;
     }
 
-    public Date getStatusStartDate() {
+    public LocalDate getStatusStartDate() {
         return statusStartDate;
     }
 
-    public void setStatusStartDate(Date statusStartDate) {
+    public void setStatusStartDate(LocalDate statusStartDate) {
         this.statusStartDate = statusStartDate;
     }
 
-    public Date getStatusStartTime() {
+    public LocalTime getStatusStartTime() {
         return statusStartTime;
     }
 
-    public void setStatusStartTime(Date statusStartTime) {
+    public void setStatusStartTime(LocalTime statusStartTime) {
         this.statusStartTime = statusStartTime;
     }
 

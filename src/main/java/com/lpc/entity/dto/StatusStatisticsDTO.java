@@ -1,7 +1,9 @@
 package com.lpc.entity.dto;
 
+import java.util.Arrays;
+
 public class StatusStatisticsDTO {
-    //状态名，字段名是为了前端图标使用
+    //状态名，字段名是为了前端图表使用
     private String name;
     //状态每天持续时间的秒数
     private Integer[] data;
