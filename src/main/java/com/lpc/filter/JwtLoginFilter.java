@@ -6,6 +6,8 @@ import com.lpc.entity.enumeration.HttpStatusEnum;
 import com.lpc.util.ResponseDataUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,6 +36,9 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         this.authenticationManager = authenticationManager;
     }
 
+    private static final Logger logger
+            = LoggerFactory.getLogger(JwtLoginFilter.class);
+
     /**
      * 验证用户信息
      */
@@ -57,7 +62,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
             ResponseDataUtil.setDataInResponse400(response,
                     null,
                     HttpStatusEnum.LOGIN_UNSUCCESSFUL);
-            e.printStackTrace();
+            logger.error("登录错误信息", e);
             return null;
         }
     }
@@ -85,7 +90,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .signWith(SignatureAlgorithm.HS512, "FatShallot")
                 .compact();
 
-        //将token写到响应里
+        //将token写到响应头里
         response.addHeader("Authorization", "Bearer " + jwt);
         ResponseDataUtil.setDataInResponse(response,
                 null,
@@ -98,5 +103,6 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         ResponseDataUtil.setDataInResponse400(response,
                 null,
                 HttpStatusEnum.LOGIN_UNSUCCESSFUL);
+        logger.error("登录错误信息："+HttpStatusEnum.LOGIN_UNSUCCESSFUL.getMsg());
     }
 }

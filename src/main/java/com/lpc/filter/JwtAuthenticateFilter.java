@@ -3,6 +3,8 @@ package com.lpc.filter;
 import com.lpc.entity.enumeration.HttpStatusEnum;
 import com.lpc.util.ResponseDataUtil;
 import io.jsonwebtoken.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,7 +22,6 @@ import java.util.List;
 
 /**
  * 用于token校验的过滤器
- * 我写的全局异常捕获只能处理控制层的异常，所以这里抛出异常没用
  */
 public class JwtAuthenticateFilter extends BasicAuthenticationFilter {
     public JwtAuthenticateFilter(AuthenticationManager authenticationManager) {
@@ -31,6 +32,9 @@ public class JwtAuthenticateFilter extends BasicAuthenticationFilter {
                                  AuthenticationEntryPoint authenticationEntryPoint) {
         super(authenticationManager, authenticationEntryPoint);
     }
+
+    private static final Logger logger
+            = LoggerFactory.getLogger(JwtLoginFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -63,18 +67,18 @@ public class JwtAuthenticateFilter extends BasicAuthenticationFilter {
                 chain.doFilter(request, response);
             } catch (ExpiredJwtException e) {
                 // 解析token时发现过期，会抛出ExpiredJwtException
-                e.printStackTrace();
                 ResponseDataUtil.setDataInResponse400(response,
                         null,
                         HttpStatusEnum.TOKEN_EXPIRED);
+                logger.error("登录错误信息",e);
             } catch (UnsupportedJwtException |
                     MalformedJwtException |
                     SignatureException |
                     IllegalArgumentException e) {
-                e.printStackTrace();
                 ResponseDataUtil.setDataInResponse400(response,
                         null,
                         HttpStatusEnum.UN_LOGIN);
+                logger.error("登录错误信息",e);
             }
         }
     }
