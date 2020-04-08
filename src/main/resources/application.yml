@@ -10,11 +10,10 @@ server:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-logging:
-  level:
-    com.lpc.dao: trace
 pagehelper:
   helper-dialect: mysql
   reasonable: true
   support-methods-arguments: true
   params: count=countSql
+logging:
+  config: classpath:config/logback-spring.xml

@@ -41,13 +41,24 @@ public class StudentServiceImpl implements StudentService {
     }
 
     /**
-     * todo 这里还要考虑到当前月还没到的那几天，以及当前天还没到的那几个小时
+     * 获取某个月的某个学生的状态统计信息
+     * 根据前台的需要将数据转成了对应的格式
      */
     @Override
     public StatusStatisticsDTO[] getStudentStatusMonthly(Long username, LocalDateTime start) {
         LocalDate startDay = start.toLocalDate();
+        //判断今天是不是在今天里面，如果是，今天及本月以后的那几天可以直接不用查了
+        LocalDate today = LocalDate.now(ZoneId.systemDefault());
+        //现在月份的第一天
+        LocalDate firstDayOfCurrentMonth = today.with(TemporalAdjusters.firstDayOfMonth());
         //当月最后一天
-        LocalDate endDay = startDay.with(TemporalAdjusters.lastDayOfMonth());
+        LocalDate endDay;
+        if (firstDayOfCurrentMonth.isEqual(startDay)) {
+            //如果查询的是当前月份，那么查询范围是本月第一天到昨天
+            endDay = today.minusDays(1);
+        } else {
+            endDay = startDay.with(TemporalAdjusters.lastDayOfMonth());
+        }
 
         // 一次性获取所有数据，然后通过stream在Java处理
         List<StudentStatusRecord> studentStatusRecords = studentStatusRecordMapper.selectStudentStatusMonthly(username,

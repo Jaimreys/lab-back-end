@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 /**
  * 将返回的数据统一封装到自定义的ResponseData类中
  */
-@RestControllerAdvice("com.lpc.controller")
+@RestControllerAdvice("com.lpc")
 public class CommonResponseHandler implements ResponseBodyAdvice {
     @Override
     public boolean supports(MethodParameter methodParameter, Class aClass) {

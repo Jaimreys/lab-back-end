@@ -13,7 +13,7 @@ import java.util.Date;
  * 自定义的Date转换类，负责接收前台传回来的时间数据并转为Java的LocalDateTime类
  */
 @Component
-public class CalendarConverter implements Converter<String, LocalDateTime> {
+public class LocalDateTimeConverter implements Converter<String, LocalDateTime> {
     @Override
     public LocalDateTime convert(String source) {
         String value = source.trim();

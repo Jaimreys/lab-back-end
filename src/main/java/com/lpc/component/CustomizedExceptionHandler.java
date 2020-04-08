@@ -18,7 +18,6 @@ import java.util.Date;
 /**
  * 全局的异常处理器
  * Throwable类的getStackTrace()获取所有异常信息数组，其中第一个就是报异常的位置
- * MenuController.getMenus(MenuController.java:24)
  * Throwable类的toString()返回类名
  */
 @RestControllerAdvice
@@ -41,11 +40,11 @@ public class CustomizedExceptionHandler {
         String locationMethod = location.substring(penultimateIndex + 1, location.lastIndexOf("(")) + "()";
         String locationClass = location.substring(0, penultimateIndex);
 
-        ex.printStackTrace();
-        //打印错误信息
-        logger.error("错误信息：" + ex.getMsg());
         //打印错误位置
         logger.error("错误位置：" + location);
+        //打印错误信息
+        //这个重载可以将Trowable接口的子对象传入，然后用日志打印出错误栈
+        logger.error("错误信息", ex);
 
         //把异常存入数据库方便查看
         ExceptionRecord exceptionRecord = new ExceptionRecord();
@@ -90,11 +89,11 @@ public class CustomizedExceptionHandler {
         String locationMethod = location.substring(penultimateIndex + 1, location.lastIndexOf("(")) + "()";
         String locationClass = location.substring(0, penultimateIndex);
 
-        ex.printStackTrace();
-        //打印错误信息
-        logger.error("错误信息：" + msg);
         //打印错误位置
         logger.error("错误位置：" + location);
+        //打印错误信息
+        //这个重载可以将Trowable接口的子对象传入，然后用日志打印出错误栈
+        logger.error("错误信息", ex);
 
         //把异常存入数据库方便查看
         ExceptionRecord exceptionRecord = new ExceptionRecord();

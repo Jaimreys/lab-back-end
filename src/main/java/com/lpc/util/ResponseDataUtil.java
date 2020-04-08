@@ -36,10 +36,6 @@ public class ResponseDataUtil {
     /**
      * 将获取的数据和相应的相应状态写到响应里
      * 登录和token校验的时候使用
-     * <p>
-     * 如果不写下面两行，前端会报404.如果写这两行，后端会报错说响应的sendError()方法已提交，然后报错
-     * writer.flush();
-     * writer.close();
      */
     public static <T> void setDataInResponse(HttpServletResponse response,
                                              T data,

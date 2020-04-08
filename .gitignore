@@ -5,6 +5,7 @@ target/
 
 ### 下面的文件不提交 ###
 **/src/test/**
+*.log
 
 ### STS ###
 .apt_generated

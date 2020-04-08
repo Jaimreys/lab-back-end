@@ -91,8 +91,6 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                 null,
                 HttpStatusEnum.SUCCESSFUL,
                 true);
-
-        chain.doFilter(request, response);
     }
 
     @Override
