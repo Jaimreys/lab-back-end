@@ -1,9 +1,9 @@
 package com.lpc.service;
 
-import com.lpc.entity.pojo.EnumRole;
+import com.lpc.entity.enumeration.RoleEnum;
 
 import java.util.List;
 
 public interface RoleService {
-    List<EnumRole> getAllRoles();
+    List<String> getAllRoles();
 }

@@ -11,8 +11,8 @@ import java.util.List;
 
 @Service
 public class MenuServiceImpl implements MenuService {
-    private MenuMapper menuMapper;
-    private RoleMenuMapper roleMenuMapper;
+    private final MenuMapper menuMapper;
+    private final RoleMenuMapper roleMenuMapper;
 
     @Autowired
     public MenuServiceImpl(MenuMapper menuMapper,
@@ -24,11 +24,11 @@ public class MenuServiceImpl implements MenuService {
     /**
      * 获取所有菜单
      *
-     * @param role 角色id
+     * @param role 用户角色
      */
     @Override
-    public List<Menu> getMenus(int role) {
-        List<Integer> menuIds = roleMenuMapper.selectMenuByRole(role);
+    public List<Menu> getMenus(String role) {
+        List<Integer> menuIds = roleMenuMapper.selectMenusByRole(role);
         return menuMapper.selectMenus(menuIds);
     }
 }

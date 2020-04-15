@@ -1,8 +1,10 @@
 package com.lpc.entity.pojo;
 
-public class EnumStatus {
-    private Integer id;
+import com.baomidou.mybatisplus.annotation.TableId;
 
+public class EnumStatus {
+    @TableId
+    private Integer id;
     private String status;
 
     public Integer getId() {

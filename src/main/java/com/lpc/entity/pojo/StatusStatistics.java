@@ -10,7 +10,6 @@ public class StatusStatistics {
     private Integer statusId;
     //2020/04/02 状态名称这个字段可能可以删除，如果删除，把StdentServiceImpl里的getStudentStatusMonthly()也改一下
     private String status;
-    // todo 持续时间用什么类型表示，还有待商榷
     // 秒数
     private Integer duration;
 

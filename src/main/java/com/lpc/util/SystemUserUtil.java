@@ -11,15 +11,15 @@ public class SystemUserUtil {
     /**
      * 获取登录后保存下来的的用户角色
      */
-    public static int getRole() {
+    public static String getRole() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        String role = "0";
+        String role = "";
         if (iterator.hasNext()) {
             role = iterator.next().getAuthority();
         }
-        return Integer.valueOf(role);
+        return role;
     }
 
     /**

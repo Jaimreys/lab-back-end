@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 public class MenuController {
-    private MenuService menuService;
+    private final MenuService menuService;
 
     @Autowired
     public MenuController(MenuService menuService) {
@@ -20,7 +20,7 @@ public class MenuController {
 
     @GetMapping("/menus")
     public List<Menu> getMenus() {
-        int role = SystemUserUtil.getRole();
+        String role = SystemUserUtil.getRole();
         return menuService.getMenus(role);
     }
 }

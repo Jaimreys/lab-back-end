@@ -1,5 +1,7 @@
 package com.lpc.entity.pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,10 +10,11 @@ import java.util.Collection;
 import java.util.List;
 
 public class SystemUser implements UserDetails {
+    @TableId(type = IdType.INPUT)
     private Long username;
     private String realName;
     private String password;
-    private Integer roleId;
+    private String role;
     private Integer statusId;
 
     public SystemUser() {
@@ -33,12 +36,12 @@ public class SystemUser implements UserDetails {
         this.password = password;
     }
 
-    public Integer getRoleId() {
-        return roleId;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public Integer getStatusId() {
@@ -54,7 +57,7 @@ public class SystemUser implements UserDetails {
         //将数据库中的role字段保存在类的Authorities中
         List<GrantedAuthority> roles = new ArrayList<>();
         roles.add(() -> {
-            return roleId.toString();
+            return this.role;
         });
         return roles;
     }

@@ -6,5 +6,5 @@ import java.util.List;
 
 @Repository
 public interface RoleMenuMapper {
-    List<Integer> selectMenuByRole(int role);
+    List<Integer> selectMenusByRole(String role);
 }

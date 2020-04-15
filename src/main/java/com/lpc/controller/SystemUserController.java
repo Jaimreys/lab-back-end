@@ -1,19 +1,14 @@
 package com.lpc.controller;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.lpc.entity.dto.SystemUserRoleDTO;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lpc.entity.pojo.SystemUser;
 import com.lpc.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 public class SystemUserController {
-    private UserServiceImpl userService;
-
+    private final UserServiceImpl userService;
 
     @Autowired
     public SystemUserController(UserServiceImpl userService) {
@@ -49,13 +44,11 @@ public class SystemUserController {
      * 获取所有账户
      */
     @GetMapping("/users")
-    public PageInfo<SystemUserRoleDTO> getSystemUsers(@RequestParam("pageNum") int pageNum,
-                                                      @RequestParam("pageSize") int pageSize,
-                                                      @RequestParam("realName") String realName) {
-        //如果前面什么都没传，realName==""
-        PageHelper.startPage(pageNum, pageSize);
-        List<SystemUserRoleDTO> users = userService.getSystemUsers(realName);
-        return new PageInfo<>(users);
+    public Page<SystemUser> getSystemUsers(@RequestParam("pageNum") int pageNum,
+                                           @RequestParam("pageSize") int pageSize,
+                                           @RequestParam("realName") String realName) {
+        //如果前面什么都没传，接收到的realName==""
+        return userService.getSystemUsers(pageNum, pageSize, realName);
     }
 
     /**

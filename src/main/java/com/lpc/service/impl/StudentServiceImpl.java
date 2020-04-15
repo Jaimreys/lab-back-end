@@ -1,7 +1,7 @@
 package com.lpc.service.impl;
 
-import com.lpc.dao.EnumStatusMapper;
-import com.lpc.dao.StudentStatusRecordMapper;
+import com.lpc.dao.EnumStatusMapperPlus;
+import com.lpc.dao.StudentStatusRecordMapperPlusUtil;
 import com.lpc.dao.SystemUserMapper;
 import com.lpc.entity.dto.StatusStatisticsDTO;
 import com.lpc.entity.dto.StudentDTO;
@@ -19,17 +19,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
-    private SystemUserMapper systemUserMapper;
-    private StudentStatusRecordMapper studentStatusRecordMapper;
-    private EnumStatusMapper enumStatusMapper;
+    private final SystemUserMapper systemUserMapper;
+    private final EnumStatusMapperPlus enumStatusMapperPlus;
+    private final StudentStatusRecordMapperPlusUtil studentStatusRecordMapperPlusUtil;
 
     @Autowired
     public StudentServiceImpl(SystemUserMapper systemUserMapper,
-                              StudentStatusRecordMapper studentStatusRecordMapper,
-                              EnumStatusMapper enumStatusMapper) {
+                              EnumStatusMapperPlus enumStatusMapperPlus,
+                              StudentStatusRecordMapperPlusUtil studentStatusRecordMapperPlusUtil
+    ) {
         this.systemUserMapper = systemUserMapper;
-        this.studentStatusRecordMapper = studentStatusRecordMapper;
-        this.enumStatusMapper = enumStatusMapper;
+        this.enumStatusMapperPlus = enumStatusMapperPlus;
+        this.studentStatusRecordMapperPlusUtil = studentStatusRecordMapperPlusUtil;
     }
 
     /**
@@ -61,12 +62,12 @@ public class StudentServiceImpl implements StudentService {
         }
 
         // 一次性获取所有数据，然后通过stream在Java处理
-        List<StudentStatusRecord> studentStatusRecords = studentStatusRecordMapper.selectStudentStatusMonthly(username,
+        List<StudentStatusRecord> studentStatusRecords = studentStatusRecordMapperPlusUtil.selectStudentStatusMonthly(username,
                 startDay,
                 endDay);
 
         //获取当前数据库里有的所有状态
-        List<EnumStatus> statusList = enumStatusMapper.selectStatus();
+        List<EnumStatus> statusList = enumStatusMapperPlus.selectList(null);
         int statusNum = statusList.size();
         //将状态转为map
         Map<Integer, String> statusMap = statusList.stream()

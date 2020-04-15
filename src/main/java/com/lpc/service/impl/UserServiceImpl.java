@@ -1,8 +1,10 @@
 package com.lpc.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lpc.dao.SystemUserMapper;
+import com.lpc.dao.SystemUserMapperPlus;
 import com.lpc.entity.CustomizedException;
-import com.lpc.entity.dto.SystemUserRoleDTO;
 import com.lpc.entity.pojo.SystemUser;
 import com.lpc.util.SystemUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +19,21 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserDetailsService {
-    private SystemUserMapper systemUserMapper;
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final SystemUserMapperPlus systemUserMapperPlus;
 
     @Autowired
-    public UserServiceImpl(SystemUserMapper systemUserMapper,
-                           @Lazy BCryptPasswordEncoder passwordEncoder) {
-        this.systemUserMapper = systemUserMapper;
+    public UserServiceImpl(@Lazy BCryptPasswordEncoder passwordEncoder,
+                           SystemUserMapperPlus systemUserMapperPlus) {
         this.passwordEncoder = passwordEncoder;
+        this.systemUserMapperPlus = systemUserMapperPlus;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //在数据库里面查询到这个用户
-        SystemUser systemUser = systemUserMapper.selectSystemUserByUsername(Long.valueOf(username));
+        SystemUser systemUser = systemUserMapperPlus.selectById(username);
+
         //避免返回null
         return systemUser == null ? new SystemUser() : systemUser;
     }
@@ -39,11 +42,11 @@ public class UserServiceImpl implements UserDetailsService {
      * 根据用户名获取系统用户信息
      */
     public SystemUser getSystemUserByUsername(Long username) {
-        return systemUserMapper.selectSystemUserByUsername(username);
+        return systemUserMapperPlus.selectById(username);
     }
 
     /**
-     * 更新用户密码
+     * 用户自己更新自己的密码
      */
     public void updatePassword(String oldPassword, String newPassword) {
         Long username = SystemUserUtil.getUsername();
@@ -61,7 +64,10 @@ public class UserServiceImpl implements UserDetailsService {
      * 根据用户id更新用户密码
      */
     private void updatePasswordByUsername(Long username, String newPassword) {
-        systemUserMapper.updatePasswordByUsername(username, newPassword);
+        SystemUser systemUser = new SystemUser();
+        systemUser.setUsername(username);
+        systemUser.setPassword(newPassword);
+        systemUserMapperPlus.updateById(systemUser);
     }
 
     /**
@@ -72,41 +78,47 @@ public class UserServiceImpl implements UserDetailsService {
     }
 
     /**
-     * 获取用户信息
+     * 获取用户信息。需要分页和模糊查询，分页已经在控制层做好了
      */
-    public List<SystemUserRoleDTO> getSystemUsers(String realName) {
-        return systemUserMapper.selectSystemUsers(realName);
+    public Page<SystemUser> getSystemUsers(int pageNum, int pageSize, String realName) {
+        Page<SystemUser> page = new Page<>(pageNum, pageSize);
+        QueryWrapper<SystemUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .like(SystemUser::getRealName,realName);
+        systemUserMapperPlus.selectPage(page, queryWrapper);
+        return page;
     }
 
     /**
      * 获取用户的真实姓名
      */
     public String getRealName() {
-        return systemUserMapper.selectUserRealNameByUsername(SystemUserUtil.getUsername());
+        SystemUser systemUser = systemUserMapperPlus.selectById(SystemUserUtil.getUsername());
+        return systemUser.getRealName();
     }
 
     /**
      * 删除用户
      */
     public void deleteSystemUser(Long username) {
-        systemUserMapper.deleteSystemUserByUsername(username);
+        systemUserMapperPlus.deleteById(username);
     }
 
     /**
      * 更改用户角色
      */
     public void updateUserRole(SystemUser systemUser) {
-        systemUserMapper.updateUserRole(systemUser);
+        systemUserMapperPlus.updateById(systemUser);
     }
 
     /**
      * 添加用户
      */
     public void addSystemUser(SystemUser systemUser) {
-        SystemUser oldUser = systemUserMapper.selectSystemUserByUsername(systemUser.getLongUsername());
+        SystemUser oldUser = systemUserMapperPlus.selectById(systemUser.getLongUsername());
         if (oldUser == null) {
             systemUser.setPassword(passwordEncoder.encode("123456"));
-            systemUserMapper.insertSystemUser(systemUser);
+            systemUserMapperPlus.insert(systemUser);
         } else {
             throw new CustomizedException("添加的用户账号与已有账号重复");
         }

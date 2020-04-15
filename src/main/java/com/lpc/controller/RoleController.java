@@ -1,6 +1,6 @@
 package com.lpc.controller;
 
-import com.lpc.entity.pojo.EnumRole;
+import com.lpc.entity.enumeration.RoleEnum;
 import com.lpc.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 public class RoleController {
-    private RoleService roleService;
+    private final RoleService roleService;
 
     @Autowired
     public RoleController(RoleService roleService) {
@@ -18,7 +18,7 @@ public class RoleController {
     }
 
     @GetMapping("/roles")
-    public List<EnumRole> getAllRoles() {
+    public List<String> getAllRoles() {
         return roleService.getAllRoles();
     }
 }

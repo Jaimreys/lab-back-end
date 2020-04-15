@@ -1,6 +1,6 @@
 package com.lpc.component;
 
-import com.lpc.dao.ExceptionRecordMapper;
+import com.lpc.dao.ExceptionRecordMapperPlus;
 import com.lpc.entity.CustomizedException;
 import com.lpc.entity.pojo.ExceptionRecord;
 import com.lpc.entity.ResponseData;
@@ -23,7 +23,7 @@ import java.util.Date;
 @RestControllerAdvice
 public class CustomizedExceptionHandler {
     @Autowired
-    private ExceptionRecordMapper exceptionRecordMapper;
+    private ExceptionRecordMapperPlus exceptionRecordMapperPlus;
 
     private static final Logger logger
             = LoggerFactory.getLogger(CustomizedExceptionHandler.class);
@@ -57,7 +57,7 @@ public class CustomizedExceptionHandler {
         exceptionRecord.setLocationRowNumber(locationRowNumber);
 
         //插入到数据库
-        exceptionRecordMapper.insertException(exceptionRecord);
+        exceptionRecordMapperPlus.insert(exceptionRecord);
 
         //给响应设置状态码
         if (ex.getCode() >= 4000 && ex.getCode() < 5000) {
@@ -106,7 +106,7 @@ public class CustomizedExceptionHandler {
         exceptionRecord.setLocationRowNumber(locationRowNumber);
 
         //插入到数据库
-        exceptionRecordMapper.insertException(exceptionRecord);
+        exceptionRecordMapperPlus.insert(exceptionRecord);
 
         //给响应设置状态码
         //500

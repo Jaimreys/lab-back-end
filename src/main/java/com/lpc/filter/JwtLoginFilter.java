@@ -76,7 +76,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
         //数据库设计了一个用户只会有一个角色
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        String role = "-1";
+        String role = "";
         if (iterator.hasNext()) {
             role = iterator.next().getAuthority();
         }
