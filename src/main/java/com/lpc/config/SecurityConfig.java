@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -25,9 +26,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
-    //这个报错可以不管
     @Autowired
-    public SecurityConfig(UserDetailsService userDetailsService) {
+    public SecurityConfig(@Qualifier("userServiceImpl") UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
@@ -51,12 +51,35 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.cors()
+    public void configure(WebSecurity web) throws Exception {
+        // 忽略swagger2
+        web.ignoring()
+                //swagger api json
+                .antMatchers("/v2/api-docs",
+                        //用来获取支持的动作
+                        "/swagger-resources/configuration/ui",
+                        //用来获取api-docs的URI
+                        "/swagger-resources",
+                        //安全选项
+                        "/swagger-resources/configuration/security",
+                        "/swagger-ui.html",
+                        "/webjars/**");
+    }
+
+    @Override
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.cors()
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
+//                .antMatchers("/swagger-ui.html").permitAll()
+//                .antMatchers("/swagger-resources/**").permitAll()
+//                .antMatchers("/images/**").permitAll()
+//                .antMatchers("/webjars/**").permitAll()
+//                .antMatchers("/v2/api-docs").permitAll()
+//                .antMatchers("/configuration/ui").permitAll()
+//                .antMatchers("/configuration/security").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JwtLoginFilter(authenticationManager()))

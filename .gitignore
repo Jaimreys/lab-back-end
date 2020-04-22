@@ -6,6 +6,10 @@ target/
 ### 下面的文件不提交 ###
 **/src/test/**
 *.log
+### 生产环境的配置文件 ###
+application-prod.yml
+application-prod.yaml
+application-prod.properties
 
 ### STS ###
 .apt_generated
@@ -34,3 +38,4 @@ build/
 .vscode/
 src/main/resources/static/
 src/main/resources/templates/
+/src/main/resources/application-prod.yml

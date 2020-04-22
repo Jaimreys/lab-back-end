@@ -9,6 +9,7 @@
 - SpringBoot
 - SpringSecurity
 - MyBatis
+- MyBatis-Plus
 
 # 说明
 这是一个前后端分离的项目，项目本身并不复杂，完全没有必要写成前后端分离。

@@ -2,7 +2,6 @@ package com.lpc.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lpc.dao.SystemUserMapper;
 import com.lpc.dao.SystemUserMapperPlus;
 import com.lpc.entity.CustomizedException;
 import com.lpc.entity.pojo.SystemUser;
@@ -14,8 +13,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserDetailsService {
@@ -83,8 +80,10 @@ public class UserServiceImpl implements UserDetailsService {
     public Page<SystemUser> getSystemUsers(int pageNum, int pageSize, String realName) {
         Page<SystemUser> page = new Page<>(pageNum, pageSize);
         QueryWrapper<SystemUser> queryWrapper = new QueryWrapper<>();
+        // 不将密码传送到前台
+        queryWrapper.select(SystemUser.class, info -> !info.getColumn().equals("password"));
         queryWrapper.lambda()
-                .like(SystemUser::getRealName,realName);
+                .like(SystemUser::getRealName, realName);
         systemUserMapperPlus.selectPage(page, queryWrapper);
         return page;
     }
