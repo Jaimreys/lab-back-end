@@ -15,7 +15,7 @@ public class SystemUser implements UserDetails {
     private String realName;
     private String password;
     private String role;
-    private Integer statusId;
+    private String status;
 
     public SystemUser() {
     }
@@ -44,12 +44,12 @@ public class SystemUser implements UserDetails {
         this.role = role;
     }
 
-    public Integer getStatusId() {
-        return statusId;
+    public String getStatus() {
+        return status;
     }
 
-    public void setStatusId(Integer statusId) {
-        this.statusId = statusId;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override

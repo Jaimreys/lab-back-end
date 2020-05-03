@@ -7,29 +7,32 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
  * 自定义的Date转换类，负责接收前台传回来的时间数据并转为Java的LocalDateTime类
+ * 只能改变@RequestParam里的日期。@PathVariable应该也可以
+ * @RequestBody里的就不行了
  */
 @Component
 public class LocalDateTimeConverter implements Converter<String, LocalDateTime> {
     @Override
     public LocalDateTime convert(String source) {
-        String value = source.trim();
-        if ("".equals(value)) {
+        source = source.trim();
+        if ("".equals(source)) {
             return null;
         }
         if (source.matches("^\\d{4}-\\d{1,2}$")) {
-            return parseDate(source, "yyyy-MM");
+            return parseDateTime(source, "yyyy-MM");
         } else if (source.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")) {
-            return parseDate(source, "yyyy-MM-dd");
+            return parseDateTime(source, "yyyy-MM-dd");
         } else if (source.matches("^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}$")) {
-            return parseDate(source, "yyyy-MM-dd hh:mm");
+            return parseDateTime(source, "yyyy-MM-dd HH:mm");
         } else if (source.matches("^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}:\\d{1,2}$")) {
-            return parseDate(source, "yyyy-MM-dd hh:mm:ss");
+            return parseDateTime(source, "yyyy-MM-dd HH:mm:ss");
         } else {
-            throw new IllegalArgumentException("Invalid boolean value '" + source + "'");
+            throw new IllegalArgumentException("Invalid datetime value '" + source + "'");
         }
     }
 
@@ -38,19 +41,10 @@ public class LocalDateTimeConverter implements Converter<String, LocalDateTime> 
      *
      * @param dateStr String 字符型日期
      * @param format  String 格式
-     * @return Date 日期
+     * @return LocalDateTime 日期
      */
-    private LocalDateTime parseDate(String dateStr, String format) {
-        Date date = null;
-        try {
-            DateFormat dateFormat = new SimpleDateFormat(format);
-            date = dateFormat.parse(dateStr);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-       return date.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
+    private LocalDateTime parseDateTime(String dateStr, String format) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
+        return LocalDateTime.parse(dateStr, dateTimeFormatter);
     }
 }

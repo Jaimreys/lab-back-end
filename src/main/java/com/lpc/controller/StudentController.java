@@ -1,9 +1,8 @@
 package com.lpc.controller;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lpc.entity.dto.StatusStatisticsDTO;
-import com.lpc.entity.dto.StudentDTO;
+import com.lpc.entity.pojo.SystemUser;
 import com.lpc.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 public class StudentController {
@@ -23,12 +21,10 @@ public class StudentController {
     }
 
     @GetMapping("/students")
-    public PageInfo<StudentDTO> getStudents(@RequestParam("pageNum") int pageNum,
-                                            @RequestParam("pageSize") int pageSize,
-                                            @RequestParam("realName") String realName) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<StudentDTO> students = studentService.getStudents(realName);
-        return new PageInfo<>(students);
+    public Page<SystemUser> getStudents(@RequestParam("pageNum") int pageNum,
+                                        @RequestParam("pageSize") int pageSize,
+                                        @RequestParam("realName") String realName) {
+        return studentService.getStudents(pageNum,pageSize,realName);
     }
 
     // 两种统计，一种是统计每个人每天的状态，一种是统计每天每个人的状态

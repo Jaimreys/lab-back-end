@@ -7,8 +7,6 @@ import java.time.Duration;
  * 状态统计信息
  */
 public class StatusStatistics {
-    private Integer statusId;
-    //2020/04/02 状态名称这个字段可能可以删除，如果删除，把StdentServiceImpl里的getStudentStatusMonthly()也改一下
     private String status;
     // 秒数
     private Integer duration;
@@ -22,14 +20,6 @@ public class StatusStatistics {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public Integer getStatusId() {
-        return statusId;
-    }
-
-    public void setStatusId(Integer statusId) {
-        this.statusId = statusId;
     }
 
     public Integer getDuration() {

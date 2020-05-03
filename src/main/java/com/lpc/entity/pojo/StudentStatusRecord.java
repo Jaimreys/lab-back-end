@@ -11,7 +11,7 @@ public class StudentStatusRecord {
 
     private String realName;
 
-    private Integer statusId;
+    private String status;
 
     private LocalDate statusStartDate;
 
@@ -43,12 +43,12 @@ public class StudentStatusRecord {
         this.realName = realName == null ? null : realName.trim();
     }
 
-    public Integer getStatusId() {
-        return statusId;
+    public String getStatus() {
+        return status;
     }
 
-    public void setStatusId(Integer statusId) {
-        this.statusId = statusId;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public LocalDate getStatusStartDate() {

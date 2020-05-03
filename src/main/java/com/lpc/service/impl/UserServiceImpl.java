@@ -3,6 +3,7 @@ package com.lpc.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lpc.dao.SystemUserMapperPlus;
+import com.lpc.dao.SystemUserMapperPlusUtil;
 import com.lpc.entity.CustomizedException;
 import com.lpc.entity.pojo.SystemUser;
 import com.lpc.util.SystemUserUtil;
@@ -18,19 +19,21 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserDetailsService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final SystemUserMapperPlus systemUserMapperPlus;
+    private final SystemUserMapperPlusUtil systemUserMapperPlusUtil;
 
     @Autowired
     public UserServiceImpl(@Lazy BCryptPasswordEncoder passwordEncoder,
-                           SystemUserMapperPlus systemUserMapperPlus) {
+                           SystemUserMapperPlus systemUserMapperPlus,
+                           SystemUserMapperPlusUtil systemUserMapperPlusUtil) {
         this.passwordEncoder = passwordEncoder;
         this.systemUserMapperPlus = systemUserMapperPlus;
+        this.systemUserMapperPlusUtil = systemUserMapperPlusUtil;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //在数据库里面查询到这个用户
         SystemUser systemUser = systemUserMapperPlus.selectById(username);
-
         //避免返回null
         return systemUser == null ? new SystemUser() : systemUser;
     }
@@ -78,14 +81,7 @@ public class UserServiceImpl implements UserDetailsService {
      * 获取用户信息。需要分页和模糊查询，分页已经在控制层做好了
      */
     public Page<SystemUser> getSystemUsers(int pageNum, int pageSize, String realName) {
-        Page<SystemUser> page = new Page<>(pageNum, pageSize);
-        QueryWrapper<SystemUser> queryWrapper = new QueryWrapper<>();
-        // 不将密码传送到前台
-        queryWrapper.select(SystemUser.class, info -> !info.getColumn().equals("password"));
-        queryWrapper.lambda()
-                .like(SystemUser::getRealName, realName);
-        systemUserMapperPlus.selectPage(page, queryWrapper);
-        return page;
+        return systemUserMapperPlusUtil.selectSystemUsersPaging(pageNum, pageSize, realName);
     }
 
     /**

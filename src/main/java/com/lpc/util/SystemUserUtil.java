@@ -29,4 +29,12 @@ public class SystemUserUtil {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return Long.valueOf(authentication.getName());
     }
+
+    /**
+     * 获取登录后保存下来的用户名
+     */
+    public static String getUsernameStr() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
+    }
 }

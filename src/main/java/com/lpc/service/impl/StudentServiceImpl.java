@@ -1,44 +1,46 @@
 package com.lpc.service.impl;
 
-import com.lpc.dao.EnumStatusMapperPlus;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lpc.dao.StudentMapperPlusUtil;
 import com.lpc.dao.StudentStatusRecordMapperPlusUtil;
-import com.lpc.dao.SystemUserMapper;
 import com.lpc.entity.dto.StatusStatisticsDTO;
-import com.lpc.entity.dto.StudentDTO;
-import com.lpc.entity.pojo.EnumStatus;
+import com.lpc.entity.enumeration.StudentStatusEnum;
 import com.lpc.entity.pojo.StatusStatistics;
 import com.lpc.entity.pojo.StudentStatusRecord;
+import com.lpc.entity.pojo.SystemUser;
 import com.lpc.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
-    private final SystemUserMapper systemUserMapper;
-    private final EnumStatusMapperPlus enumStatusMapperPlus;
     private final StudentStatusRecordMapperPlusUtil studentStatusRecordMapperPlusUtil;
+    private final StudentMapperPlusUtil studentMapperPlusUtil;
 
     @Autowired
-    public StudentServiceImpl(SystemUserMapper systemUserMapper,
-                              EnumStatusMapperPlus enumStatusMapperPlus,
-                              StudentStatusRecordMapperPlusUtil studentStatusRecordMapperPlusUtil
+    public StudentServiceImpl(StudentStatusRecordMapperPlusUtil studentStatusRecordMapperPlusUtil,
+                              StudentMapperPlusUtil studentMapperPlusUtil
     ) {
-        this.systemUserMapper = systemUserMapper;
-        this.enumStatusMapperPlus = enumStatusMapperPlus;
         this.studentStatusRecordMapperPlusUtil = studentStatusRecordMapperPlusUtil;
+        this.studentMapperPlusUtil = studentMapperPlusUtil;
     }
 
     /**
-     * 获取所有学生的信息
+     * 获取所有学生
      */
     @Override
-    public List<StudentDTO> getStudents(String realName) {
-        return systemUserMapper.selectStudents(realName);
+    public List<SystemUser> getAllStudents() {
+        return studentMapperPlusUtil.selectAllStudents();
     }
 
     /**
@@ -48,13 +50,14 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StatusStatisticsDTO[] getStudentStatusMonthly(Long username, LocalDateTime start) {
         LocalDate startDay = start.toLocalDate();
-        //判断今天是不是在今天里面，如果是，今天及本月以后的那几天可以直接不用查了
+        //判断今天是不是在当前月里面，如果是，今天及本月以后的那几天可以直接不用查了
         LocalDate today = LocalDate.now(ZoneId.systemDefault());
         //现在月份的第一天
         LocalDate firstDayOfCurrentMonth = today.with(TemporalAdjusters.firstDayOfMonth());
         //当月最后一天
         LocalDate endDay;
-        if (firstDayOfCurrentMonth.isEqual(startDay)) {
+
+         if (firstDayOfCurrentMonth.isEqual(startDay)) {
             //如果查询的是当前月份，那么查询范围是本月第一天到昨天
             endDay = today.minusDays(1);
         } else {
@@ -66,12 +69,13 @@ public class StudentServiceImpl implements StudentService {
                 startDay,
                 endDay);
 
-        //获取当前数据库里有的所有状态
-        List<EnumStatus> statusList = enumStatusMapperPlus.selectList(null);
-        int statusNum = statusList.size();
-        //将状态转为map
-        Map<Integer, String> statusMap = statusList.stream()
-                .collect(Collectors.toMap(EnumStatus::getId, EnumStatus::getStatus));
+        //获取所有状态
+        StudentStatusEnum[] studentStatusEnumArray = StudentStatusEnum.values();
+        int statusNum = studentStatusEnumArray.length;
+        Map<Integer, String> statusMap = Arrays.stream(studentStatusEnumArray)
+                .collect(Collectors.toMap(
+                        StudentStatusEnum::getId,
+                        StudentStatusEnum::getStatus));
 
         // 计算当前月有几天
         int daysInMonth = start.toLocalDate().lengthOfMonth();
@@ -84,8 +88,8 @@ public class StudentServiceImpl implements StudentService {
             //这个list里包含的是同一天中的各个状态
             List<StatusStatistics> statusStatisticsList = new ArrayList<>(statusNum);
             //聚合每种状态
-            Map<Integer, List<StudentStatusRecord>> mapByStatus = dateValue.stream()
-                    .collect(Collectors.groupingBy(StudentStatusRecord::getStatusId));
+            Map<String, List<StudentStatusRecord>> mapByStatus = dateValue.stream()
+                    .collect(Collectors.groupingBy(StudentStatusRecord::getStatus));
             mapByStatus.forEach((statusKey, statusValue) -> {
                 //计算一种状态持续时间的总和
                 Integer sumDuration = statusValue.stream()
@@ -94,8 +98,7 @@ public class StudentServiceImpl implements StudentService {
 
                 //形成一条统计信息
                 StatusStatistics statusStatistics = new StatusStatistics();
-                statusStatistics.setStatusId(statusKey);
-                statusStatistics.setStatus(statusMap.get(statusKey));
+                statusStatistics.setStatus(statusKey);
                 statusStatistics.setDuration(sumDuration);
                 //添加到数组中
                 statusStatisticsList.add(statusStatistics);
@@ -117,7 +120,7 @@ public class StudentServiceImpl implements StudentService {
                 } else {
                     for (StatusStatistics statusStatistics : resultByDay[j]) {
                         //如果这一天有这种状态的时间
-                        if (statusList.get(i).getId().equals(statusStatistics.getStatusId())) {
+                        if (studentStatusEnumArray[i].getStatus().equals(statusStatistics.getStatus())) {
                             dailyDuration[j] = statusStatistics.getDuration();
                         }
                     }
@@ -128,11 +131,19 @@ public class StudentServiceImpl implements StudentService {
                 }
             }
             StatusStatisticsDTO dto = new StatusStatisticsDTO();
-            dto.setName(statusList.get(i).getStatus());
+            dto.setName(studentStatusEnumArray[i].getStatus());
             dto.setData(dailyDuration);
             resultByStatus[i] = dto;
         }
 
         return resultByStatus;
+    }
+
+    /**
+     * 获取学生
+     */
+    @Override
+    public Page<SystemUser> getStudents(int pageNum, int pageSize, String realName) {
+        return studentMapperPlusUtil.selectStudents(pageNum, pageSize, realName);
     }
 }
