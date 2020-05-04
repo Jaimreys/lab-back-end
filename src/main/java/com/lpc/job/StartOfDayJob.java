@@ -1,6 +1,6 @@
 package com.lpc.job;
 
-import com.lpc.entity.enumeration.StudentStatusEnum;
+import com.lpc.entity.enumeration.StudentStateEnum;
 import com.lpc.entity.pojo.SystemUser;
 import com.lpc.service.StudentService;
 import org.quartz.JobExecutionContext;
@@ -33,9 +33,9 @@ public class StartOfDayJob extends QuartzJobBean {
         // 读取所有学生，然后将状态重置
         List<SystemUser> studentList = studentService.getAllStudents();
         for (SystemUser student : studentList) {
-            if (student.getStatus() == null) {
+            if (student.getState() == null) {
                 // 如果状态为空
-                student.setStatus(StudentStatusEnum.REST.getStatus());
+                student.setState(StudentStateEnum.REST.getState());
             } else {
 
             }

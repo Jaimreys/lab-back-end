@@ -1,12 +1,12 @@
 package com.lpc.entity.dto;
 
-public class StatusStatisticsDTO {
+public class StateStatisticsDTO {
     //状态名，字段名name是为了前端图表使用
     private String name;
     //状态每天持续时间的秒数
     private Integer[] data;
 
-    public StatusStatisticsDTO() {
+    public StateStatisticsDTO() {
     }
 
     public String getName() {

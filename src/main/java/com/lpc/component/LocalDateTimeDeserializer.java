@@ -17,6 +17,8 @@ public class LocalDateTimeDeserializer extends JSR310DateTimeDeserializerBase<Lo
     private static final long serialVersionUID = 1L;
     private static final DateTimeFormatter DEFAULT_FORMATTER;
     public static final LocalDateTimeDeserializer INSTANCE;
+    private static final DateTimeFormatter dateTimeFormatter
+            = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     static {
         DEFAULT_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
@@ -121,34 +123,30 @@ public class LocalDateTimeDeserializer extends JSR310DateTimeDeserializerBase<Lo
         }
     }
 
+    /**
+     * 将字符串转化为LocalDateTime类
+     */
     private LocalDateTime convert(String source) {
         source = source.trim();
         if ("".equals(source)) {
             return null;
         }
         if (source.matches("^\\d{4}-\\d{1,2}$")) {
-            return parseDateTime(source, "yyyy-MM");
+            // yyyy-MM
+            return LocalDateTime.parse(source + "-01 00:00:00", dateTimeFormatter);
         } else if (source.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")) {
-            return parseDateTime(source, "yyyy-MM-dd");
+            // yyyy-MM-dd
+            return LocalDateTime.parse(source + " 00:00:00", dateTimeFormatter);
         } else if (source.matches("^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}$")) {
-            return parseDateTime(source, "yyyy-MM-dd HH:mm");
+            // yyyy-MM-dd HH:mm
+            return LocalDateTime.parse(source + ":00", dateTimeFormatter);
         } else if (source.matches("^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}:\\d{1,2}$")) {
-            return parseDateTime(source, "yyyy-MM-dd HH:mm:ss");
+            // yyyy-MM-dd HH:mm:ss
+            return LocalDateTime.parse(source, dateTimeFormatter);
         } else {
             throw new IllegalArgumentException("Invalid datetime value '" + source + "'");
         }
     }
 
-    /**
-     * 格式化日期
-     *
-     * @param dateStr String 字符型日期
-     * @param format  String 格式
-     * @return LocalDateTime 日期
-     */
-    private LocalDateTime parseDateTime(String dateStr, String format) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
-        return LocalDateTime.parse(dateStr, dateTimeFormatter);
-    }
 }
 

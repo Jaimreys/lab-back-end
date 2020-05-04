@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        // 忽略swagger2
+        // 不拦截swagger2相关内容
         web.ignoring()
                 //swagger api json
                 .antMatchers("/v2/api-docs",

@@ -1,7 +1,7 @@
 package com.lpc.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lpc.entity.dto.StatusStatisticsDTO;
+import com.lpc.entity.dto.StateStatisticsDTO;
 import com.lpc.entity.pojo.SystemUser;
 import com.lpc.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +28,9 @@ public class StudentController {
     }
 
     // 两种统计，一种是统计每个人每天的状态，一种是统计每天每个人的状态
-    @GetMapping("/student/month/status")
-    public StatusStatisticsDTO[] getStudentStatusMonthly(@RequestParam("username") Long username,
-                                                         @RequestParam("month") LocalDateTime startMonth) {
-        return studentService.getStudentStatusMonthly(username, startMonth);
+    @GetMapping("/student/month/states")
+    public StateStatisticsDTO[] getStudentStateMonthly(@RequestParam("username") Long username,
+                                                       @RequestParam("month") LocalDateTime startMonth) {
+        return studentService.getStudentStateMonthly(username, startMonth);
     }
 }

@@ -2,11 +2,11 @@ package com.lpc.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lpc.dao.StudentMapperPlusUtil;
-import com.lpc.dao.StudentStatusRecordMapperPlusUtil;
-import com.lpc.entity.dto.StatusStatisticsDTO;
-import com.lpc.entity.enumeration.StudentStatusEnum;
-import com.lpc.entity.pojo.StatusStatistics;
-import com.lpc.entity.pojo.StudentStatusRecord;
+import com.lpc.dao.StudentStateRecordMapperPlusUtil;
+import com.lpc.entity.dto.StateStatisticsDTO;
+import com.lpc.entity.enumeration.StudentStateEnum;
+import com.lpc.entity.pojo.StateStatistics;
+import com.lpc.entity.pojo.StudentStateRecord;
 import com.lpc.entity.pojo.SystemUser;
 import com.lpc.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +24,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
-    private final StudentStatusRecordMapperPlusUtil studentStatusRecordMapperPlusUtil;
+    private final StudentStateRecordMapperPlusUtil studentStateRecordMapperPlusUtil;
     private final StudentMapperPlusUtil studentMapperPlusUtil;
 
     @Autowired
-    public StudentServiceImpl(StudentStatusRecordMapperPlusUtil studentStatusRecordMapperPlusUtil,
+    public StudentServiceImpl(StudentStateRecordMapperPlusUtil studentStateRecordMapperPlusUtil,
                               StudentMapperPlusUtil studentMapperPlusUtil
     ) {
-        this.studentStatusRecordMapperPlusUtil = studentStatusRecordMapperPlusUtil;
+        this.studentStateRecordMapperPlusUtil = studentStateRecordMapperPlusUtil;
         this.studentMapperPlusUtil = studentMapperPlusUtil;
     }
 
@@ -48,7 +48,7 @@ public class StudentServiceImpl implements StudentService {
      * 根据前台的需要将数据转成了对应的格式
      */
     @Override
-    public StatusStatisticsDTO[] getStudentStatusMonthly(Long username, LocalDateTime start) {
+    public StateStatisticsDTO[] getStudentStateMonthly(Long username, LocalDateTime start) {
         LocalDate startDay = start.toLocalDate();
         //判断今天是不是在当前月里面，如果是，今天及本月以后的那几天可以直接不用查了
         LocalDate today = LocalDate.now(ZoneId.systemDefault());
@@ -65,52 +65,52 @@ public class StudentServiceImpl implements StudentService {
         }
 
         // 一次性获取所有数据，然后通过stream在Java处理
-        List<StudentStatusRecord> studentStatusRecords = studentStatusRecordMapperPlusUtil.selectStudentStatusMonthly(username,
+        List<StudentStateRecord> studentStateRecords = studentStateRecordMapperPlusUtil.selectStudentStatusMonthly(username,
                 startDay,
                 endDay);
 
         //获取所有状态
-        StudentStatusEnum[] studentStatusEnumArray = StudentStatusEnum.values();
-        int statusNum = studentStatusEnumArray.length;
-        Map<Integer, String> statusMap = Arrays.stream(studentStatusEnumArray)
+        StudentStateEnum[] studentStateEnumArray = StudentStateEnum.values();
+        int stateNum = studentStateEnumArray.length;
+        Map<Integer, String> stateMap = Arrays.stream(studentStateEnumArray)
                 .collect(Collectors.toMap(
-                        StudentStatusEnum::getId,
-                        StudentStatusEnum::getStatus));
+                        StudentStateEnum::getId,
+                        StudentStateEnum::getState));
 
         // 计算当前月有几天
         int daysInMonth = start.toLocalDate().lengthOfMonth();
-        List<StatusStatistics>[] resultByDay = new ArrayList[daysInMonth];
+        List<StateStatistics>[] resultByDay = new ArrayList[daysInMonth];
 
         //聚合同一天的所有个状态
-        Map<LocalDate, List<StudentStatusRecord>> mapByDate = studentStatusRecords.stream()
-                .collect(Collectors.groupingBy(StudentStatusRecord::getStatusStartDate));
+        Map<LocalDate, List<StudentStateRecord>> mapByDate = studentStateRecords.stream()
+                .collect(Collectors.groupingBy(StudentStateRecord::getStateStartDate));
         mapByDate.forEach((dateKey, dateValue) -> {
             //这个list里包含的是同一天中的各个状态
-            List<StatusStatistics> statusStatisticsList = new ArrayList<>(statusNum);
+            List<StateStatistics> stateStatisticsList = new ArrayList<>(stateNum);
             //聚合每种状态
-            Map<String, List<StudentStatusRecord>> mapByStatus = dateValue.stream()
-                    .collect(Collectors.groupingBy(StudentStatusRecord::getStatus));
-            mapByStatus.forEach((statusKey, statusValue) -> {
+            Map<String, List<StudentStateRecord>> mapByState = dateValue.stream()
+                    .collect(Collectors.groupingBy(StudentStateRecord::getState));
+            mapByState.forEach((stateKey, stateValue) -> {
                 //计算一种状态持续时间的总和
-                Integer sumDuration = statusValue.stream()
-                        .map(StudentStatusRecord::getStatusDuration)
+                Integer sumDuration = stateValue.stream()
+                        .map(StudentStateRecord::getStateDuration)
                         .reduce(0, Integer::sum);
 
                 //形成一条统计信息
-                StatusStatistics statusStatistics = new StatusStatistics();
-                statusStatistics.setStatus(statusKey);
-                statusStatistics.setDuration(sumDuration);
+                StateStatistics stateStatistics = new StateStatistics();
+                stateStatistics.setState(stateKey);
+                stateStatistics.setDuration(sumDuration);
                 //添加到数组中
-                statusStatisticsList.add(statusStatistics);
+                stateStatisticsList.add(stateStatistics);
             });
             //将天数-1作为索引
             int index = dateKey.getDayOfMonth() - 1;
-            resultByDay[index] = statusStatisticsList;
+            resultByDay[index] = stateStatisticsList;
         });
 
         //返回一个数组，数组长度是状态的数量，每个元素包含状态id,状态名称，还有一个数组，包含每天的状态秒数（int）
-        StatusStatisticsDTO[] resultByStatus = new StatusStatisticsDTO[statusNum];
-        for (int i = 0; i < statusNum; i++) {
+        StateStatisticsDTO[] resultByState = new StateStatisticsDTO[stateNum];
+        for (int i = 0; i < stateNum; i++) {
             Integer[] dailyDuration = new Integer[daysInMonth];
             //j表示一个月的天数，如一号，二号，三号
             for (int j = 0; j < daysInMonth; j++) {
@@ -118,10 +118,10 @@ public class StudentServiceImpl implements StudentService {
                 if (resultByDay[j] == null) {
                     dailyDuration[j] = 0;
                 } else {
-                    for (StatusStatistics statusStatistics : resultByDay[j]) {
+                    for (StateStatistics stateStatistics : resultByDay[j]) {
                         //如果这一天有这种状态的时间
-                        if (studentStatusEnumArray[i].getStatus().equals(statusStatistics.getStatus())) {
-                            dailyDuration[j] = statusStatistics.getDuration();
+                        if (studentStateEnumArray[i].getState().equals(stateStatistics.getState())) {
+                            dailyDuration[j] = stateStatistics.getDuration();
                         }
                     }
                     //如果循环结束还是空的，就赋值为0
@@ -130,13 +130,13 @@ public class StudentServiceImpl implements StudentService {
                     }
                 }
             }
-            StatusStatisticsDTO dto = new StatusStatisticsDTO();
-            dto.setName(studentStatusEnumArray[i].getStatus());
+            StateStatisticsDTO dto = new StateStatisticsDTO();
+            dto.setName(studentStateEnumArray[i].getState());
             dto.setData(dailyDuration);
-            resultByStatus[i] = dto;
+            resultByState[i] = dto;
         }
 
-        return resultByStatus;
+        return resultByState;
     }
 
     /**

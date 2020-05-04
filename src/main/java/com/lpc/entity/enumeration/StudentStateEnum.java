@@ -1,6 +1,6 @@
 package com.lpc.entity.enumeration;
 
-public enum  StudentStatusEnum {
+public enum StudentStateEnum {
     STUDY(1,"学习"),
     REST(2,"休息"),
     LEAVE(3,"放假"),
@@ -9,18 +9,18 @@ public enum  StudentStatusEnum {
     ;
 
     private Integer id;
-    private String status;
+    private String state;
 
-    private StudentStatusEnum(Integer id, String status) {
+    private StudentStateEnum(Integer id, String state) {
         this.id = id;
-        this.status = status;
+        this.state = state;
     }
 
     public Integer getId() {
         return id;
     }
 
-    public String getStatus() {
-        return status;
+    public String getState() {
+        return state;
     }
 }

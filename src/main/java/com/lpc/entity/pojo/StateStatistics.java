@@ -1,25 +1,22 @@
 package com.lpc.entity.pojo;
 
-import java.math.BigDecimal;
-import java.time.Duration;
-
 /**
  * 状态统计信息
  */
-public class StatusStatistics {
-    private String status;
+public class StateStatistics {
+    private String state;
     // 秒数
     private Integer duration;
 
-    public StatusStatistics() {
+    public StateStatistics() {
     }
 
-    public String getStatus() {
-        return status;
+    public String getState() {
+        return state;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setState(String state) {
+        this.state = state;
     }
 
     public Integer getDuration() {
