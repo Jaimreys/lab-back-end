@@ -44,16 +44,16 @@
 
 ## 登录界面
 
-![Login.png](http://ww1.sinaimg.cn/large/005IGVTXly1gcvu5vx3gzj31hc0smjt1.jpg)
+![Login](https://fat-shallot.oss-cn-hangzhou.aliyuncs.com/img/20200505092037.png)
 
 ## 主界面
 
-![Home.png](http://ww1.sinaimg.cn/large/005IGVTXly1gd9ib3iu7pj31hc0smgn7.jpg)
+![Home](https://fat-shallot.oss-cn-hangzhou.aliyuncs.com/img/20200505092120.png)
 
 ## 用户账户界面
 
-![User.png](http://ww1.sinaimg.cn/large/005IGVTXly1gdaklamtasj31hc0smq5i.jpg)
+![User](https://fat-shallot.oss-cn-hangzhou.aliyuncs.com/img/20200505092142.png)
 
 ## 学生按月状态统计界面
 
-![学生按月状态统计.png](http://ww1.sinaimg.cn/large/005IGVTXly1gdfhb6mp2dj31hc0sm412.jpg)
+![每月学生状态统计](https://fat-shallot.oss-cn-hangzhou.aliyuncs.com/img/20200505092201.png)

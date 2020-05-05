@@ -25,20 +25,11 @@ public class StartOfDayJob extends QuartzJobBean {
     }
 
     /**
-     * 这里就有好多要考虑的了！
+     * 在0点重置学生的状态，并插入新状态数据
      */
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext)
             throws JobExecutionException {
-        // 读取所有学生，然后将状态重置
-        List<SystemUser> studentList = studentService.getAllStudents();
-        for (SystemUser student : studentList) {
-            if (student.getState() == null) {
-                // 如果状态为空
-                student.setState(StudentStateEnum.REST.getState());
-            } else {
-
-            }
-        }
+        studentService.initStudentsState0oclockEveryday();
     }
 }

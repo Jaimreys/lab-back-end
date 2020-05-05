@@ -13,4 +13,8 @@ public interface StudentService {
     StateStatisticsDTO[] getStudentStateMonthly(Long username, LocalDateTime start);
 
     Page<SystemUser> getStudents(int pageNum, int pageSize, String realName);
+
+    void updateStudentState(SystemUser systemUser);
+
+    void initStudentsState0oclockEveryday();
 }

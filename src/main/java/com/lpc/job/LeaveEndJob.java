@@ -6,6 +6,7 @@ import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -21,6 +22,7 @@ public class LeaveEndJob extends QuartzJobBean {
         this.systemUserMapperPlus = systemUserMapperPlus;
     }
 
+    @Transactional
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext)
             throws JobExecutionException {

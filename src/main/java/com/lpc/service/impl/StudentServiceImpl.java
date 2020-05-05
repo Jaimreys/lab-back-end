@@ -2,7 +2,9 @@ package com.lpc.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lpc.dao.StudentMapperPlusUtil;
+import com.lpc.dao.StudentStateRecordMapperPlus;
 import com.lpc.dao.StudentStateRecordMapperPlusUtil;
+import com.lpc.dao.SystemUserMapperPlus;
 import com.lpc.entity.dto.StateStatisticsDTO;
 import com.lpc.entity.enumeration.StudentStateEnum;
 import com.lpc.entity.pojo.StateStatistics;
@@ -11,10 +13,9 @@ import com.lpc.entity.pojo.SystemUser;
 import com.lpc.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,13 +27,19 @@ import java.util.stream.Collectors;
 public class StudentServiceImpl implements StudentService {
     private final StudentStateRecordMapperPlusUtil studentStateRecordMapperPlusUtil;
     private final StudentMapperPlusUtil studentMapperPlusUtil;
+    private final SystemUserMapperPlus systemUserMapperPlus;
+    private final StudentStateRecordMapperPlus studentStateRecordMapperPlus;
 
     @Autowired
     public StudentServiceImpl(StudentStateRecordMapperPlusUtil studentStateRecordMapperPlusUtil,
-                              StudentMapperPlusUtil studentMapperPlusUtil
+                              StudentMapperPlusUtil studentMapperPlusUtil,
+                              SystemUserMapperPlus systemUserMapperPlus,
+                              StudentStateRecordMapperPlus studentStateRecordMapperPlus
     ) {
         this.studentStateRecordMapperPlusUtil = studentStateRecordMapperPlusUtil;
         this.studentMapperPlusUtil = studentMapperPlusUtil;
+        this.systemUserMapperPlus = systemUserMapperPlus;
+        this.studentStateRecordMapperPlus = studentStateRecordMapperPlus;
     }
 
     /**
@@ -57,7 +64,7 @@ public class StudentServiceImpl implements StudentService {
         //当月最后一天
         LocalDate endDay;
 
-         if (firstDayOfCurrentMonth.isEqual(startDay)) {
+        if (firstDayOfCurrentMonth.isEqual(startDay)) {
             //如果查询的是当前月份，那么查询范围是本月第一天到昨天
             endDay = today.minusDays(1);
         } else {
@@ -145,5 +152,51 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Page<SystemUser> getStudents(int pageNum, int pageSize, String realName) {
         return studentMapperPlusUtil.selectStudents(pageNum, pageSize, realName);
+    }
+
+    // 业务逻辑还没写完
+    @Transactional
+    @Override
+    public void updateStudentState(SystemUser systemUser) {
+        systemUserMapperPlus.updateById(systemUser);
+    }
+
+    /**
+     * 在每天0点的时候，重置学生的状态
+     */
+    @Override
+    public void initStudentsState0oclockEveryday() {
+        // 获取所有学生
+        List<SystemUser> studentList = getAllStudents();
+        for (SystemUser student : studentList) {
+            if (student.getState() == null) {
+                // 如果状态为空，设置为休息
+                student.setState(StudentStateEnum.REST.getState());
+            } else {
+                // 如果状态不为空，查一查这个学生前一天的最后一个状态
+                StudentStateRecord studentHesternalLastState
+                        = studentStateRecordMapperPlusUtil.selectStudentHesternalLastState(student.getLongUsername());
+                if (studentHesternalLastState != null) {
+                    // 如果昨天最后一条状态存在的话，就计算出这个状态的持续时间
+                    // 计算持续时间，结束时间是当天最后一秒
+                    int duration = (int) Duration
+                            .between(studentHesternalLastState.getStateStartTime(),
+                                    LocalTime.of(23, 59, 59))
+                            .getSeconds();
+                    studentHesternalLastState.setStateDuration(duration);
+                    studentStateRecordMapperPlus.updateById(studentHesternalLastState);
+                }
+            }
+            // 插入新一天的新状态记录
+            StudentStateRecord initRecord = new StudentStateRecord();
+            initRecord.setUsername(student.getLongUsername());
+            initRecord.setRealName(student.getRealName());
+            initRecord.setState(student.getState());
+            initRecord.setStateStartDate(LocalDate.now());
+            initRecord.setStateStartTime(LocalTime.of(0,0,0));
+            studentStateRecordMapperPlus.insert(initRecord);
+            // 更新学生状态
+            systemUserMapperPlus.updateById(student);
+        }
     }
 }

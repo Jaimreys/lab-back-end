@@ -2,9 +2,9 @@ package com.lpc.job;
 
 import com.lpc.dao.SystemUserMapperPlus;
 import com.lpc.entity.pojo.SystemUser;
+import com.lpc.service.StudentService;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 
@@ -17,16 +17,22 @@ import java.time.LocalDateTime;
 public class LeaveStartJob extends QuartzJobBean {
     private Scheduler scheduler;
     private SystemUserMapperPlus systemUserMapperPlus;
+    private StudentService studentService;
 
     @Autowired
     public LeaveStartJob(Scheduler scheduler,
-                         SystemUserMapperPlus systemUserMapperPlus) {
+                         SystemUserMapperPlus systemUserMapperPlus,
+                         StudentService studentService) {
         this.scheduler = scheduler;
         this.systemUserMapperPlus = systemUserMapperPlus;
+        this.studentService = studentService;
     }
 
+    /**
+     * 如果要添加事务，给service层方法添加，这里再调用service层方法
+     */
     @Override
-    protected void executeInternal(JobExecutionContext jobExecutionContext)
+    public void executeInternal(JobExecutionContext jobExecutionContext)
             throws JobExecutionException {
         Trigger trigger = jobExecutionContext.getTrigger();
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
@@ -51,4 +57,5 @@ public class LeaveStartJob extends QuartzJobBean {
             e.printStackTrace();
         }
     }
+
 }
