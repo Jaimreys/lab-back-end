@@ -5,10 +5,12 @@ import com.lpc.entity.dto.StateStatisticsDTO;
 import com.lpc.entity.pojo.SystemUser;
 import com.lpc.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import java.time.LocalDateTime;
 
 @RestController
@@ -20,6 +22,7 @@ public class StudentController {
         this.studentService = studentService;
     }
 
+    @Secured({"admin","teacher"})
     @GetMapping("/students")
     public Page<SystemUser> getStudents(@RequestParam("pageNum") int pageNum,
                                         @RequestParam("pageSize") int pageSize,

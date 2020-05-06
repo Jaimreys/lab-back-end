@@ -1,9 +1,11 @@
 package com.lpc.entity.enumeration;
 
 public enum RoleEnum {
-    ADMIN("admin"),
-    TEACHER("teacher"),
-    STUDENT("student");
+    // 以role_开头是SpringSecurity控制权所要求的
+    // @Secured({"admin","teacher"})而数据库里存的角色就是role_admin，role_teacher
+    ADMIN("role_admin"),
+    TEACHER("role_teacher"),
+    STUDENT("role_student");
 
     private String role;
 
