@@ -16,7 +16,9 @@ public class SystemUserController {
     }
 
     /**
-     * 获取用户的真实姓名
+     * 获取发起该请求的用户真实姓名
+     *
+     * @return 发起该请求的用户真实姓名
      */
     @GetMapping("/user/real_name")
     public String getRealName() {
@@ -25,6 +27,9 @@ public class SystemUserController {
 
     /**
      * 修改密码
+     *
+     * @param oldPassword 旧密码
+     * @param newPassword 要修改的新密码
      */
     @PutMapping("/user/password")
     public void updatePassword(@RequestParam("oldPassword") String oldPassword,
@@ -34,6 +39,8 @@ public class SystemUserController {
 
     /**
      * 初始化密码
+     *
+     * @param username 用户名
      */
     @PutMapping("/user/password/init")
     public void initializePassword(@RequestParam("username") Long username) {
@@ -41,7 +48,11 @@ public class SystemUserController {
     }
 
     /**
-     * 获取所有账户
+     * 分页下获取所有账户符合条件的账户
+     *
+     * @param pageNum  当前页码
+     * @param pageSize 每页数据条数
+     * @param realName 系统用户真实姓名，支持模糊查询
      */
     @GetMapping("/users")
     public Page<SystemUser> getSystemUsers(@RequestParam("pageNum") int pageNum,
@@ -53,6 +64,8 @@ public class SystemUserController {
 
     /**
      * 删除用户
+     *
+     * @param username 用户名
      */
     @DeleteMapping("/user")
     public void deleteSystemUser(@RequestParam("username") Long username) {
@@ -61,6 +74,9 @@ public class SystemUserController {
 
     /**
      * 更改用户角色
+     *
+     * @param systemUser 系统用户对象。
+     *                   username、role两个字段不能为null
      */
     @PutMapping("/user/role")
     public void updateUserRole(@RequestBody SystemUser systemUser) {
@@ -69,6 +85,9 @@ public class SystemUserController {
 
     /**
      * 添加用户
+     *
+     * @param systemUser 要新增的系统用户对象。
+     *                   role、username、realName三个字段不能为null
      */
     @PostMapping("/user")
     public void addSystemUser(@RequestBody SystemUser systemUser) {

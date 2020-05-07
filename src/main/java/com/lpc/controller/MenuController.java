@@ -18,6 +18,11 @@ public class MenuController {
         this.menuService = menuService;
     }
 
+    /**
+     * 获取当前用户拥有权限的菜单
+     *
+     * @return 当前用户拥有权限的按钮List
+     */
     @GetMapping("/menus")
     public List<Menu> getMenus() {
         String role = SystemUserUtil.getRole();

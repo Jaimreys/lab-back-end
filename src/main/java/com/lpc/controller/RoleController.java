@@ -1,6 +1,5 @@
 package com.lpc.controller;
 
-import com.lpc.entity.enumeration.RoleEnum;
 import com.lpc.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +16,11 @@ public class RoleController {
         this.roleService = roleService;
     }
 
+    /**
+     * 获取所有用户角色
+     *
+     * @return 所有用户角色的List
+     */
     @GetMapping("/roles")
     public List<String> getAllRoles() {
         return roleService.getAllRoles();

@@ -3,14 +3,13 @@
 
 [项目的前端部分](https://github.com/FatShallot/lab-front-end)
 
-[相关文档](http://47.100.44.201:8000/category/front-and-back-end-separation/)
-
 后台使用了
 - SpringBoot
 - SpringSecurity
 - MyBatis
 - MyBatis-Plus
 - Quartz
+- Swagger2(需要登录，所有swagger-ui上无法测试API)
 
 # 说明
 这是一个前后端分离的项目，项目本身并不复杂，完全没有必要写成前后端分离。
