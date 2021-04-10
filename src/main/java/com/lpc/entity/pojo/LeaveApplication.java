@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -34,10 +35,12 @@ public class LeaveApplication {
 
     @ApiModelProperty(value = "假期开始时间")
     @NotNull(message = "假期开始时间不能为空", groups = {insert.class, update.class})
+    @Future(message = "请假开始时间不得晚于当前时间", groups = {insert.class})
     private LocalDateTime startTime;
 
     @ApiModelProperty(value = "假期结束时间")
     @NotNull(groups = {insert.class, update.class})
+    @Future(message = "请假结束时间不得晚于当前时间", groups = {insert.class})
     private LocalDateTime endTime;
 
     @ApiModelProperty(value = "请假原因")

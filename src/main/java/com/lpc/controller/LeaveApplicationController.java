@@ -2,7 +2,6 @@ package com.lpc.controller;
 
 import com.lpc.entity.pojo.LeaveApplication;
 import com.lpc.service.LeaveApplicationService;
-import com.mysql.cj.protocol.x.XMessage;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -11,7 +10,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.groups.Default;
 import java.util.List;
